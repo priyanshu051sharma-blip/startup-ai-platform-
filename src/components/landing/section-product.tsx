@@ -39,7 +39,8 @@ export function LandingProduct() {
         minHeight: "100svh",
         display: "flex",
         alignItems: "center",
-        padding: "120px 24px",
+        background: "var(--bg-2)",
+      padding: "120px 24px",
       }}
     >
       <div style={{ maxWidth: 1040, margin: "0 auto", width: "100%" }}>
@@ -53,11 +54,11 @@ export function LandingProduct() {
           <p className="eyebrow" style={{ marginBottom: 20 }}>The platform</p>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 64px)",
-              fontWeight: 700,
-              letterSpacing: "-0.035em",
-              lineHeight: 1.08,
-              color: "#f5f5f5",
+              fontSize: "clamp(30px, 4.5vw, 58px)",
+              fontWeight: 800,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.1,
+              color: "var(--text)",
             }}
           >
             Everything your startup needs.
@@ -80,8 +81,8 @@ export function LandingProduct() {
                 cursor: "pointer",
                 border: "none",
                 transition: "all 0.18s",
-                background: active === t.id ? "#1a1a1a" : "transparent",
-                color: active === t.id ? "#f5f5f5" : "#444",
+                background: active === t.id ? "var(--surface-3)" : "transparent",
+                color: active === t.id ? "var(--text)" : "var(--text-3)",
                 outline: active === t.id ? "1px solid rgba(255,255,255,0.08)" : "none",
               }}
             >
@@ -111,8 +112,8 @@ export function LandingProduct() {
               <h3
                 style={{
                   fontSize: "clamp(20px, 2.2vw, 28px)",
-                  fontWeight: 600,
-                  color: "#f5f5f5",
+                  fontWeight: 700,
+                  color: "var(--text)",
                   letterSpacing: "-0.02em",
                   lineHeight: 1.25,
                   marginBottom: 16,
@@ -139,8 +140,9 @@ export function LandingProduct() {
               style={{
                 borderRadius: 20,
                 overflow: "hidden",
-                background: "#0f0f0f",
-                border: "1px solid rgba(255,255,255,0.07)",
+                background: "#0a0a14",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.15)",
               }}
             >
               {cur.preview}

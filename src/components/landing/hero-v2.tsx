@@ -25,23 +25,11 @@ export function LandingHero() {
         textAlign: "center",
         padding: "0 24px",
         position: "relative",
+        background: "var(--bg)",
       }}
     >
-      {/* Subtle radial glow behind headline */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "30%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 600,
-          height: 600,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
+      {/* Subtle accent blob */}
+      <div aria-hidden="true" style={{ position: "absolute", top: "20%", left: "50%", transform: "translate(-50%, -50%)", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       {/* Eyebrow */}
       <motion.div
@@ -62,10 +50,10 @@ export function LandingHero() {
         transition={{ delay: 0.18, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         style={{
           fontSize: "clamp(44px, 8vw, 96px)",
-          fontWeight: 700,
+          fontWeight: 800,
           lineHeight: 1.02,
-          letterSpacing: "-0.045em",
-          color: "#f5f5f5",
+          letterSpacing: "-0.05em",
+          color: "var(--text)",
           maxWidth: 840,
           marginBottom: 0,
         }}
@@ -120,7 +108,7 @@ export function LandingHero() {
         style={{
           fontSize: 18,
           lineHeight: 1.7,
-          color: "#888",
+          color: "var(--text-2)",
           maxWidth: 480,
           marginBottom: 48,
         }}
@@ -135,7 +123,7 @@ export function LandingHero() {
         transition={{ delay: 0.55 }}
         style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 64 }}
       >
-        <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 15, padding: "11px 26px" }}>
+        <Link href="/auth/signup" className="btn btn-primary" style={{ fontSize: 15, padding: "11px 26px" }}>
           Start building free
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
@@ -155,16 +143,16 @@ export function LandingHero() {
           display: "flex",
           alignItems: "center",
           gap: 32,
-          color: "#444",
+          color: "var(--text-3)",
           fontSize: 13,
           flexWrap: "wrap",
           justifyContent: "center",
         }}
       >
         <span>12,000+ founders</span>
-        <span style={{ color: "#2a2a2a" }}>·</span>
+        <span style={{ color: "var(--border-2)" }}>·</span>
         <span>₹240Cr+ raised</span>
-        <span style={{ color: "#2a2a2a" }}>·</span>
+        <span style={{ color: "var(--border-2)" }}>·</span>
         <span>Free to start</span>
       </motion.div>
 

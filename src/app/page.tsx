@@ -9,7 +9,7 @@ import { LandingFooter } from "@/components/landing/footer-v2";
 
 export default function Home() {
   return (
-    <div style={{ background: "#080808" }}>
+    <div style={{ background: "var(--bg)" }}>
       <div className="noise" aria-hidden="true" />
       <LandingNav />
       <main>

@@ -77,91 +77,47 @@ export function Recommendations() {
   };
 
   return (
-    <div className="rounded-2xl p-5" style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)" }}>
-      <div className="flex items-center justify-between mb-5">
+    <div className="card" style={{ padding: "18px 20px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
         <div>
-          <h2 className="text-white font-medium text-sm">AI Recommendations</h2>
-          <p className="text-xs mt-0.5" style={{ color: "#525252" }}>{open.length} actions · sorted by impact</p>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>AI Recommendations</p>
+          <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 2 }}>{open.length} actions · sorted by impact</p>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#f59e0b" }} />
-          <span className="text-xs font-medium" style={{ color: "#f59e0b" }}>
-            +{open.reduce((s, r) => s + parseInt(r.impact), 0)} pts potential
-          </span>
-        </div>
+        <span style={{ fontSize: 11, color: "var(--amber)", fontWeight: 600 }}>+24 pts potential</span>
       </div>
 
-      {/* Open recs */}
-      <div className="space-y-2">
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {open.map((rec, i) => {
-          const pc = priorityColor[rec.priority];
           const isOpen = expanded === rec.id;
-
+          const pc = priorityColor[rec.priority];
           return (
-            <motion.div
-              key={rec.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="rounded-xl overflow-hidden"
-              style={{
-                background: isOpen ? "#161616" : "#0a0a0a",
-                border: `1px solid ${isOpen ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.05)"}`,
-              }}
-            >
-              <button
-                onClick={() => setExpanded(isOpen ? null : rec.id)}
-                className="w-full flex items-start gap-3 px-4 py-3.5 text-left"
-              >
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
-                  style={{ background: pc.bg, color: pc.text, border: `1px solid ${pc.border}` }}>
+            <motion.div key={rec.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+              style={{ borderRadius: 10, overflow: "hidden", background: isOpen ? "var(--surface-2)" : "var(--surface-3)", border: `1px solid ${isOpen ? "var(--border-2)" : "var(--border)"}` }}>
+              <button onClick={() => setExpanded(isOpen ? null : rec.id)}
+                style={{ width: "100%", display: "flex", alignItems: "flex-start", gap: 10, padding: "12px 14px", textAlign: "left", background: "transparent", border: "none", cursor: "pointer" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: pc.bg, color: pc.text, border: `1px solid ${pc.border}`, flexShrink: 0, marginTop: 1, whiteSpace: "nowrap" }}>
                   {priorityLabel[rec.priority]}
                 </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-xs font-medium leading-snug">{rec.title}</p>
-                  <p className="text-xs mt-0.5 truncate" style={{ color: "#525252" }}>{rec.desc}</p>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", lineHeight: 1.3, marginBottom: 2 }}>{rec.title}</p>
+                  <p style={{ fontSize: 11, color: "var(--text-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{rec.desc}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                  <span className="text-xs font-medium" style={{ color: "#6366f1" }}>{rec.impact}</span>
-                  <svg
-                    width="12" height="12" viewBox="0 0 12 12" fill="none"
-                    style={{ color: "#525252", transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}
-                  >
-                    <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </div>
+                <span style={{ fontSize: 11, color: "var(--accent)", fontWeight: 600, flexShrink: 0 }}>{rec.impact}</span>
               </button>
-
               <AnimatePresence>
                 {isOpen && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
-                    exit={{ height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pb-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                      <p className="text-xs leading-relaxed mt-3 mb-1" style={{ color: "#a0a0a0" }}>
-                        <span style={{ color: "#6366f1" }}>Why: </span>{rec.why}
+                  <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
+                    <div style={{ padding: "0 14px 14px", borderTop: "1px solid var(--border)" }}>
+                      <p style={{ fontSize: 11, color: "var(--text-2)", lineHeight: 1.6, marginTop: 10, marginBottom: 8 }}>
+                        <span style={{ color: "var(--accent)" }}>Why: </span>{rec.why}
                       </p>
-                      <div className="flex items-center gap-3 mt-3 text-xs" style={{ color: "#525252" }}>
-                        <span>Effort: {rec.effort}</span>
-                        <span>·</span>
-                        <span>Impact: {rec.impact}</span>
-                      </div>
-                      <div className="flex gap-2 mt-3">
-                        <button
-                          onClick={() => markDone(rec.id)}
-                          className="flex-1 text-xs py-2 rounded-lg font-medium transition-colors"
-                          style={{ background: "rgba(99,102,241,0.1)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.2)" }}
-                        >
+                      <p style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 10 }}>Effort: {rec.effort}</p>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button onClick={() => markDone(rec.id)}
+                          style={{ flex: 1, fontSize: 11, padding: "8px", borderRadius: 8, fontWeight: 600, background: "var(--accent-light)", color: "var(--accent)", border: "1px solid rgba(79,70,229,0.2)", cursor: "pointer" }}>
                           Mark done
                         </button>
-                        <button
-                          className="flex-1 text-xs py-2 rounded-lg font-medium transition-colors"
-                          style={{ background: "#6366f1", color: "#fff" }}
-                        >
+                        <button style={{ flex: 1, fontSize: 11, padding: "8px", borderRadius: 8, fontWeight: 600, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer" }}>
                           Fix with AI →
                         </button>
                       </div>
@@ -173,21 +129,19 @@ export function Recommendations() {
           );
         })}
       </div>
-
-      {/* Done */}
       {done.length > 0 && (
-        <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-2" style={{ color: "#525252" }}>
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--border)" }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Completed ({done.length})
           </p>
-          {done.map((rec) => (
-            <div key={rec.id} className="flex items-center gap-2 py-1.5 text-xs" style={{ color: "#525252" }}>
+          {done.map(rec => (
+            <div key={rec.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", fontSize: 11, color: "var(--text-3)" }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <circle cx="6" cy="6" r="5" stroke="rgba(34,197,94,0.4)" strokeWidth="1" />
-                <path d="M3 6L5 8L9 4" stroke="#4ade80" strokeWidth="1.5" strokeLinecap="round" />
+                <circle cx="6" cy="6" r="5" stroke="var(--green)" strokeWidth="1" opacity="0.4" />
+                <path d="M3 6L5 8L9 4" stroke="var(--green)" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-              <span className="line-through truncate">{rec.title}</span>
-              <span className="ml-auto flex-shrink-0" style={{ color: "#4ade80" }}>{rec.impact}</span>
+              <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "line-through" }}>{rec.title}</span>
+              <span style={{ color: "var(--green)", flexShrink: 0 }}>{rec.impact}</span>
             </div>
           ))}
         </div>

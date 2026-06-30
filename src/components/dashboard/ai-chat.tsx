@@ -99,7 +99,7 @@ export function AiChat() {
   };
 
   return (
-    <div style={{ borderRadius: 16, display: "flex", flexDirection: "column", overflow: "hidden", background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)", height: 440 }}>
+    <div style={{ borderRadius: 14, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--surface)", border: "1px solid var(--border)", height: 420 }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -122,8 +122,8 @@ export function AiChat() {
               maxWidth: "85%",
               padding: "10px 14px",
               borderRadius: m.role === "user" ? "14px 14px 4px 14px" : "4px 14px 14px 14px",
-              background: m.role === "user" ? "#6366f1" : "#141414",
-              border: m.role === "user" ? "none" : "1px solid rgba(255,255,255,0.06)",
+              background: m.role === "user" ? "var(--accent)" : "var(--surface-2)",
+              border: m.role === "user" ? "none" : "1px solid var(--border)",
               fontSize: 13,
               color: "#f5f5f5",
               lineHeight: 1.6,
@@ -156,7 +156,7 @@ export function AiChat() {
       <div style={{ display: "flex", gap: 6, padding: "8px 18px", overflowX: "auto", flexShrink: 0 }} className="scrollbar-none">
         {PROMPTS.map((p) => (
           <button key={p} onClick={() => send(p)} disabled={thinking}
-            style={{ fontSize: 11, padding: "5px 12px", borderRadius: 999, background: "#141414", border: "1px solid rgba(255,255,255,0.07)", color: "#888", cursor: thinking ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.15s" }}>
+            style={{ fontSize: 11, padding: "5px 12px", borderRadius: 999, background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text-3)", cursor: thinking ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.15s" }}>
             {p}
           </button>
         ))}
@@ -170,11 +170,11 @@ export function AiChat() {
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
           placeholder="Ask your AI team anything…"
           disabled={thinking}
-          style={{ flex: 1, background: "#141414", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "9px 14px", fontSize: 13, color: "#f5f5f5", outline: "none" }}
+          style={{ flex: 1, background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 10, padding: "9px 14px", fontSize: 13, color: "var(--text)", outline: "none" }}
         />
         <button onClick={() => send()} disabled={thinking || !input.trim()}
-          style={{ width: 34, height: 34, borderRadius: 10, background: input.trim() && !thinking ? "#6366f1" : "#141414", border: "none", cursor: input.trim() && !thinking ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.15s" }}>
-          <Send size={13} color={input.trim() && !thinking ? "#fff" : "#444"} />
+          style={{ width: 34, height: 34, borderRadius: 10, background: input.trim() && !thinking ? "var(--accent)" : "var(--surface-2)", border: "none", cursor: input.trim() && !thinking ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.15s" }}>
+          <Send size={13} color={input.trim() && !thinking ? "#fff" : "var(--text-3)"} />
         </button>
       </div>
     </div>
