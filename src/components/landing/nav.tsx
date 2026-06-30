@@ -47,7 +47,7 @@ export function LandingNav() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <Link href="/dashboard" className="nav-text-link">Sign in</Link>
-          <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 13, padding: "8px 18px" }}>
+          <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 13, padding: "7px 16px" }}>
             Start free
           </Link>
         </div>

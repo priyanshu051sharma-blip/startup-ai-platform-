@@ -135,13 +135,13 @@ export function LandingHero() {
         transition={{ delay: 0.55 }}
         style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 64 }}
       >
-        <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 15, padding: "13px 28px" }}>
+        <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 15, padding: "11px 26px" }}>
           Start building free
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
-        <Link href="#product" className="btn btn-secondary" style={{ fontSize: 15, padding: "13px 28px" }}>
+        <Link href="#product" className="btn btn-secondary" style={{ fontSize: 15, padding: "11px 26px" }}>
           See how it works
         </Link>
       </motion.div>

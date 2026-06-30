@@ -3,11 +3,14 @@ import { TopBar } from "@/components/dashboard/top-bar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#080808" }}>
+    <div style={{ display: "flex", height: "100svh", overflow: "hidden", background: "var(--black)" }}>
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
         <TopBar />
-        <main className="flex-1 overflow-y-auto scrollbar-none" style={{ background: "#080808" }}>
+        <main
+          className="scrollbar-none"
+          style={{ flex: 1, overflowY: "auto", background: "var(--black)" }}
+        >
           {children}
         </main>
       </div>

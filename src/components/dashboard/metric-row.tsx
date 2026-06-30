@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useInView, motion } from "framer-motion";
 
-function useCountUp(target: number, duration = 900) {
+function useCountUp(target: number, duration = 1000) {
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLParagraphElement>(null);
   const inView = useInView(ref, { once: true });
@@ -31,67 +31,39 @@ function fmt(n: number, prefix: string, suffix: string, decimals: number): strin
   return `${prefix}${n.toFixed(decimals)}${suffix}`;
 }
 
-function Tile({
-  label, target, prefix, suffix, decimals, change, up, index
-}: {
-  label: string; target: number; prefix: string; suffix: string;
-  decimals: number; change: string; up: boolean; index: number;
-}) {
+function Tile({ label, target, prefix, suffix, decimals, change, up, index }:
+  { label: string; target: number; prefix: string; suffix: string; decimals: number; change: string; up: boolean; index: number }) {
   const { val, ref } = useCountUp(target);
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.3 }}
-      style={{ padding: "18px 20px" }}
+      transition={{ delay: index * 0.04, duration: 0.28 }}
+      style={{ padding: "16px 18px" }}
     >
-      <p style={{ fontSize: 11, color: "#444", marginBottom: 10, fontWeight: 500 }}>{label}</p>
-      <p
-        ref={ref}
-        style={{
-          fontSize: 22,
-          fontWeight: 700,
-          color: "#f5f5f5",
-          letterSpacing: "-0.03em",
-          lineHeight: 1,
-          marginBottom: 8,
-        }}
-      >
+      <p style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 8, fontWeight: 500, letterSpacing: "0.01em" }}>{label}</p>
+      <p ref={ref} style={{ fontSize: 21, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 6 }}>
         {fmt(val, prefix, suffix, decimals)}
       </p>
-      <span style={{ fontSize: 11, color: up ? "#4ade80" : "#f87171" }}>{change}</span>
+      <p style={{ fontSize: 11, color: up ? "#4ade80" : "#f87171", fontWeight: 500 }}>{change}</p>
     </motion.div>
   );
 }
 
 const METRICS = [
-  { label: "MRR",         target: 420000,  prefix: "₹", suffix: "",     decimals: 0, change: "+12% mo/mo", up: true  },
-  { label: "ARR",         target: 5040000, prefix: "₹", suffix: "",     decimals: 0, change: "+12% mo/mo", up: true  },
-  { label: "Customers",   target: 847,     prefix: "",  suffix: "",     decimals: 0, change: "+68 this mo", up: true  },
-  { label: "Burn Rate",   target: 280000,  prefix: "₹", suffix: "",     decimals: 0, change: "-4% mo/mo",  up: false },
-  { label: "Runway",      target: 18,      prefix: "",  suffix: " mo",  decimals: 0, change: "healthy",    up: true  },
-  { label: "Valuation",   target: 3.2,     prefix: "₹", suffix: " Cr",  decimals: 1, change: "AI est.",    up: true  },
+  { label: "MRR",       target: 420000,  prefix: "₹", suffix: "",    decimals: 0, change: "+12% mo/mo", up: true  },
+  { label: "ARR",       target: 5040000, prefix: "₹", suffix: "",    decimals: 0, change: "+12% mo/mo", up: true  },
+  { label: "Customers", target: 847,     prefix: "",  suffix: "",    decimals: 0, change: "+68 this mo", up: true  },
+  { label: "Burn",      target: 280000,  prefix: "₹", suffix: "",    decimals: 0, change: "-4% mo/mo",  up: false },
+  { label: "Runway",    target: 18,      prefix: "",  suffix: " mo", decimals: 0, change: "healthy",    up: true  },
+  { label: "Valuation", target: 3.2,     prefix: "₹", suffix: " Cr", decimals: 1, change: "AI est.",    up: true  },
 ];
 
 export function MetricRow() {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(6, 1fr)",
-        background: "#0f0f0f",
-        border: "1px solid rgba(255,255,255,0.06)",
-        borderRadius: 16,
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
       {METRICS.map((m, i) => (
-        <div
-          key={m.label}
-          style={{
-            borderRight: i < METRICS.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
-          }}
-        >
+        <div key={m.label} style={{ borderRight: i < METRICS.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
           <Tile {...m} index={i} />
         </div>
       ))}
