@@ -2,16 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, Command, ChevronDown } from "lucide-react";
+import { Search, Bell, Command } from "lucide-react";
 
 const COMMANDS = [
-  { label: "Run startup analysis",     shortcut: "A" },
-  { label: "Generate pitch deck",      shortcut: "P" },
-  { label: "Calculate valuation",      shortcut: "V" },
-  { label: "Open financial model",     shortcut: "F" },
-  { label: "Practice investor pitch",  shortcut: "I" },
-  { label: "Find grants",              shortcut: "G" },
-  { label: "View health score",        shortcut: "H" },
+  { label: "Run startup analysis",    shortcut: "A" },
+  { label: "Generate pitch deck",     shortcut: "P" },
+  { label: "Calculate valuation",     shortcut: "V" },
+  { label: "Open financial model",    shortcut: "F" },
+  { label: "Practice investor pitch", shortcut: "I" },
+  { label: "Find grants",             shortcut: "G" },
 ];
 
 export function TopBar() {
@@ -19,7 +18,7 @@ export function TopBar() {
   const [query, setQuery] = useState("");
 
   const close = useCallback(() => { setOpen(false); setQuery(""); }, []);
-  const openPalette = useCallback(() => { setOpen(true); setQuery(""); }, []);
+  const openPalette = useCallback(() => { setOpen(true); }, []);
 
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
@@ -37,36 +36,83 @@ export function TopBar() {
   return (
     <>
       <header
-        className="h-12 flex items-center justify-between px-5 flex-shrink-0"
-        style={{ background: "#080808", borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+        style={{
+          height: 48,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 20px",
+          background: "#080808",
+          borderBottom: "1px solid rgba(255,255,255,0.04)",
+          flexShrink: 0,
+        }}
       >
-        {/* Workspace */}
-        <button className="flex items-center gap-1.5 text-sm text-white">
-          My Startup
-          <ChevronDown size={12} style={{ color: "#525252" }} />
-        </button>
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5" }}>My Startup</span>
 
-        {/* Search pill */}
         <button
           onClick={openPalette}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
-          style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.07)", color: "#525252" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "5px 12px",
+            borderRadius: 8,
+            background: "#0f0f0f",
+            border: "1px solid rgba(255,255,255,0.06)",
+            color: "#444",
+            fontSize: 12,
+            cursor: "pointer",
+          }}
           aria-label="Open command palette"
         >
-          <Search size={12} />
+          <Search size={11} />
           <span>Search…</span>
-          <kbd className="ml-2 text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#1c1c1c", color: "#525252" }}>⌘K</kbd>
+          <kbd
+            style={{
+              marginLeft: 8,
+              fontSize: 10,
+              padding: "2px 6px",
+              borderRadius: 4,
+              background: "#141414",
+              color: "#444",
+            }}
+          >
+            ⌘K
+          </kbd>
         </button>
 
-        {/* Right */}
-        <div className="flex items-center gap-2">
-          <button className="relative w-7 h-7 flex items-center justify-center rounded-lg transition-colors hover:bg-[#161616]"
-            style={{ color: "#525252" }} aria-label="Notifications">
-            <Bell size={14} />
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full" style={{ background: "#6366f1" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            style={{
+              width: 28, height: 28,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              borderRadius: 8, background: "transparent", border: "none", cursor: "pointer",
+              color: "#444", position: "relative",
+              transition: "background 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#141414")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            aria-label="Notifications"
+          >
+            <Bell size={13} />
+            <span
+              style={{
+                position: "absolute", top: 6, right: 6,
+                width: 5, height: 5, borderRadius: "50%",
+                background: "#6366f1",
+              }}
+            />
           </button>
-          <button className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
-            style={{ background: "#6366f1" }} aria-label="Profile">
+          <button
+            style={{
+              width: 28, height: 28, borderRadius: "50%",
+              background: "#6366f1",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 9, fontWeight: 700, color: "#fff",
+              border: "none", cursor: "pointer",
+            }}
+            aria-label="Profile"
+          >
             PS
           </button>
         </div>
@@ -79,45 +125,89 @@ export function TopBar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-start justify-center"
-            style={{ paddingTop: "14vh", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+            style={{
+              position: "fixed", inset: 0, zIndex: 50,
+              display: "flex", alignItems: "flex-start", justifyContent: "center",
+              paddingTop: "14vh",
+              background: "rgba(0,0,0,0.65)",
+              backdropFilter: "blur(6px)",
+            }}
             onClick={close}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.97, y: -12 }}
+              initial={{ opacity: 0, scale: 0.97, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: -12 }}
+              exit={{ opacity: 0, scale: 0.97 }}
               transition={{ type: "spring", stiffness: 450, damping: 32 }}
-              className="w-full max-w-md rounded-2xl overflow-hidden"
-              style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}
+              style={{
+                width: "100%",
+                maxWidth: 440,
+                borderRadius: 16,
+                overflow: "hidden",
+                background: "#0f0f0f",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 24px 80px rgba(0,0,0,0.7)",
+              }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                <Command size={14} style={{ color: "#6366f1", flexShrink: 0 }} />
+              <div
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "14px 16px",
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                <Command size={13} style={{ color: "#6366f1", flexShrink: 0 }} />
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Type a command or search…"
-                  className="flex-1 bg-transparent text-sm text-white placeholder-[#525252] outline-none"
+                  style={{
+                    flex: 1, background: "transparent",
+                    fontSize: 14, color: "#f5f5f5",
+                    border: "none", outline: "none",
+                  }}
                 />
-                <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#1c1c1c", color: "#525252" }} onClick={close}>ESC</kbd>
+                <kbd
+                  style={{ fontSize: 10, padding: "2px 6px", borderRadius: 4, background: "#1a1a1a", color: "#444", cursor: "pointer" }}
+                  onClick={close}
+                >
+                  ESC
+                </kbd>
               </div>
 
-              <div className="py-1.5">
+              <div style={{ padding: "6px" }}>
                 {filtered.length === 0 ? (
-                  <p className="px-4 py-6 text-center text-sm" style={{ color: "#525252" }}>No results</p>
+                  <p style={{ padding: "20px", textAlign: "center", fontSize: 13, color: "#444" }}>No results</p>
                 ) : filtered.map((cmd) => (
-                  <button key={cmd.label}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors hover:bg-[#161616]"
-                    style={{ color: "#a0a0a0" }}
+                  <button
+                    key={cmd.label}
+                    style={{
+                      width: "100%",
+                      display: "flex", alignItems: "center", gap: 12,
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      fontSize: 13, textAlign: "left",
+                      background: "transparent", border: "none", cursor: "pointer",
+                      color: "#888",
+                      transition: "background 0.12s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "#141414")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
-                    <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
-                      style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.06)" }}>
-                      <Command size={11} />
+                    <div
+                      style={{
+                        width: 24, height: 24, borderRadius: 7,
+                        background: "#141414", border: "1px solid rgba(255,255,255,0.06)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Command size={10} />
                     </div>
-                    <span className="flex-1">{cmd.label}</span>
-                    <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#161616", color: "#525252" }}>
+                    <span style={{ flex: 1, color: "#f5f5f5" }}>{cmd.label}</span>
+                    <kbd style={{ fontSize: 10, padding: "2px 6px", borderRadius: 4, background: "#141414", color: "#444" }}>
                       ⌘{cmd.shortcut}
                     </kbd>
                   </button>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, TrendingUp, BarChart3, DollarSign,
-  Globe, Target, Mic, Bot, FileText, Settings, Zap,
+  Globe, Target, Mic, Bot, Settings, Zap,
 } from "lucide-react";
 
 const NAV = [
@@ -18,7 +18,6 @@ const NAV = [
   { icon: Target,          label: "Competitors", href: "/dashboard/competitors" },
   { icon: Mic,             label: "Pitch",       href: "/dashboard/pitch" },
   { icon: Bot,             label: "AI Team",     href: "/dashboard/ai" },
-  { icon: FileText,        label: "Reports",     href: "/dashboard/reports" },
   { icon: Settings,        label: "Settings",    href: "/dashboard/settings" },
 ];
 
@@ -28,28 +27,50 @@ export function Sidebar() {
 
   return (
     <motion.nav
-      animate={{ width: expanded ? 200 : 52 }}
-      transition={{ type: "spring", stiffness: 400, damping: 35 }}
+      animate={{ width: expanded ? 196 : 48 }}
+      transition={{ type: "spring", stiffness: 400, damping: 38 }}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
-      className="flex-shrink-0 flex flex-col h-screen overflow-hidden"
-      style={{ background: "#0a0a0a", borderRight: "1px solid rgba(255,255,255,0.05)" }}
+      style={{
+        flexShrink: 0,
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        overflow: "hidden",
+        background: "#0a0a0a",
+        borderRight: "1px solid rgba(255,255,255,0.04)",
+      }}
       aria-label="Sidebar navigation"
     >
       {/* Logo */}
-      <div className="flex items-center h-12 px-3.5 flex-shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
-          style={{ background: "#6366f1" }}>
-          <Zap size={12} className="text-white" />
+      <div
+        style={{
+          height: 48,
+          display: "flex",
+          alignItems: "center",
+          paddingLeft: 12,
+          flexShrink: 0,
+          borderBottom: "1px solid rgba(255,255,255,0.04)",
+        }}
+      >
+        <div
+          style={{
+            width: 24, height: 24, borderRadius: 7,
+            background: "#6366f1",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Zap size={11} color="white" />
         </div>
         <AnimatePresence>
           {expanded && (
             <motion.span
-              initial={{ opacity: 0, x: -8 }}
+              initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="ml-2.5 text-white font-semibold text-sm whitespace-nowrap overflow-hidden"
+              transition={{ duration: 0.12 }}
+              style={{ marginLeft: 10, fontSize: 14, fontWeight: 600, color: "#f5f5f5", whiteSpace: "nowrap" }}
             >
               FounderAI
             </motion.span>
@@ -57,8 +78,8 @@ export function Sidebar() {
         </AnimatePresence>
       </div>
 
-      {/* Nav */}
-      <div className="flex-1 overflow-y-auto scrollbar-none py-3 px-2 space-y-0.5">
+      {/* Nav items */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "8px 6px", display: "flex", flexDirection: "column", gap: 2 }} className="scrollbar-none">
         {NAV.map((item) => {
           const Icon = item.icon;
           const active = path === item.href;
@@ -68,21 +89,22 @@ export function Sidebar() {
               href={item.href}
               className="nav-item"
               style={{
-                background: active ? "#161616" : "transparent",
-                color: active ? "#f5f5f5" : "#525252",
-                border: active ? "1px solid rgba(255,255,255,0.07)" : "1px solid transparent",
+                color: active ? "#f5f5f5" : "#444",
+                background: active ? "#141414" : "transparent",
+                border: active ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+                padding: "7px 10px",
               }}
               aria-current={active ? "page" : undefined}
             >
-              <Icon size={15} style={{ flexShrink: 0 }} />
+              <Icon size={14} style={{ flexShrink: 0 }} />
               <AnimatePresence>
                 {expanded && (
                   <motion.span
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.12 }}
-                    className="text-[13px] whitespace-nowrap"
+                    transition={{ duration: 0.1 }}
+                    style={{ fontSize: 13, whiteSpace: "nowrap" }}
                   >
                     {item.label}
                   </motion.span>
@@ -94,10 +116,16 @@ export function Sidebar() {
       </div>
 
       {/* User */}
-      <div className="flex-shrink-0 p-2" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div className="nav-item" style={{ cursor: "default" }}>
-          <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-            style={{ background: "#6366f1" }}>
+      <div style={{ padding: "6px", borderTop: "1px solid rgba(255,255,255,0.04)", flexShrink: 0 }}>
+        <div className="nav-item" style={{ cursor: "default", padding: "7px 10px" }}>
+          <div
+            style={{
+              width: 24, height: 24, borderRadius: "50%",
+              background: "#6366f1",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 9, fontWeight: 700, color: "#fff", flexShrink: 0,
+            }}
+          >
             PS
           </div>
           <AnimatePresence>
@@ -106,10 +134,10 @@ export function Sidebar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="overflow-hidden"
+                style={{ overflow: "hidden" }}
               >
-                <p className="text-[12px] text-white font-medium whitespace-nowrap">Prince Sharma</p>
-                <p className="text-[10px] whitespace-nowrap" style={{ color: "#525252" }}>Pro plan</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "#f5f5f5", whiteSpace: "nowrap" }}>Prince Sharma</p>
+                <p style={{ fontSize: 10, color: "#444", whiteSpace: "nowrap" }}>Pro</p>
               </motion.div>
             )}
           </AnimatePresence>

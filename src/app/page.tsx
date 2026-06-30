@@ -11,20 +11,16 @@ export default function Home() {
   return (
     <div style={{ background: "#080808" }}>
       <div className="noise" aria-hidden="true" />
-      <div className="aurora" aria-hidden="true">
-        <div className="aurora-blob aurora-blob-1" />
-        <div className="aurora-blob aurora-blob-2" />
-      </div>
-      <div className="relative z-10">
-        <LandingNav />
+      <LandingNav />
+      <main>
         <LandingHero />
         <LandingBelief />
         <LandingProduct />
         <LandingAgents />
         <LandingMetrics />
         <LandingPricing />
-        <LandingFooter />
-      </div>
+      </main>
+      <LandingFooter />
     </div>
   );
 }

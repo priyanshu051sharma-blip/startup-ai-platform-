@@ -8,48 +8,66 @@ export function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
+    const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -16 }}
+      initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 h-14"
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 h-16"
       style={{
-        background: scrolled ? "rgba(8,8,8,0.85)" : "transparent",
+        background: scrolled ? "rgba(8,8,8,0.9)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
-        transition: "all 0.3s ease",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "none",
+        transition: "background 0.3s ease, border-color 0.3s ease",
       }}
     >
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-          style={{ background: "#6366f1" }}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1L13 7L7 13M1 7H13" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <Link href="/" className="flex items-center gap-2.5" aria-label="FounderAI home">
+        <div
+          style={{
+            width: 28, height: 28, borderRadius: 8,
+            background: "#6366f1",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}
+        >
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5H11M7 2L11 6.5L7 11" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <span className="text-white font-semibold text-[15px] tracking-tight">FounderAI</span>
+        <span style={{ color: "#f5f5f5", fontWeight: 600, fontSize: 15, letterSpacing: "-0.02em" }}>FounderAI</span>
       </Link>
 
-      {/* Links */}
-      <nav className="hidden md:flex items-center gap-8" aria-label="Navigation">
-        {["Product", "Pricing", "Blog"].map((l) => (
-          <Link key={l} href="#" className="text-sm text-[#a0a0a0] hover:text-white transition-colors">{l}</Link>
+      <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        {[
+          { label: "Product", href: "#product" },
+          { label: "Pricing", href: "#pricing" },
+        ].map((l) => (
+          <Link
+            key={l.label}
+            href={l.href}
+            style={{ fontSize: 14, color: "#888", textDecoration: "none", transition: "color 0.15s" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#f5f5f5")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+          >
+            {l.label}
+          </Link>
         ))}
       </nav>
 
-      {/* CTA */}
-      <div className="flex items-center gap-3">
-        <Link href="/dashboard" className="text-sm text-[#a0a0a0] hover:text-white transition-colors">
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <Link
+          href="/dashboard"
+          style={{ fontSize: 14, color: "#888", textDecoration: "none", transition: "color 0.15s" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#f5f5f5")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+        >
           Sign in
         </Link>
-        <Link href="/dashboard" className="btn btn-primary text-sm" style={{ padding: "7px 16px" }}>
+        <Link href="/dashboard" className="btn btn-primary" style={{ fontSize: 13, padding: "8px 18px" }}>
           Start free
         </Link>
       </div>

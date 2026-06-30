@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-const plans = [
+const PLANS = [
   {
     name: "Free",
     price: 0,
@@ -12,7 +12,7 @@ const plans = [
     desc: "Get started",
     features: ["3 AI analyses / month", "Basic health score", "AI chat (limited)", "1 workspace"],
     cta: "Start free",
-    highlight: false,
+    accent: false,
   },
   {
     name: "Starter",
@@ -20,8 +20,8 @@ const plans = [
     yearlyPrice: 799,
     desc: "For solo founders",
     features: ["Unlimited AI chat", "Full startup analysis", "Business model tools", "Competitor analysis", "5 workspaces"],
-    cta: "Start Starter",
-    highlight: false,
+    cta: "Get Starter",
+    accent: false,
   },
   {
     name: "Pro",
@@ -29,8 +29,8 @@ const plans = [
     yearlyPrice: 1999,
     desc: "For serious founders",
     features: ["Everything in Starter", "Financial modeling", "Valuation engine", "Pitch deck generator", "Investor simulator", "Grant finder"],
-    cta: "Start Pro",
-    highlight: true,
+    cta: "Get Pro",
+    accent: true,
   },
   {
     name: "Business",
@@ -38,8 +38,8 @@ const plans = [
     yearlyPrice: 4799,
     desc: "For growing teams",
     features: ["Everything in Pro", "Team collaboration", "Advanced reports", "Mentor access", "Priority support"],
-    cta: "Start Business",
-    highlight: false,
+    cta: "Get Business",
+    accent: false,
   },
 ];
 
@@ -47,101 +47,138 @@ export function LandingPricing() {
   const [yearly, setYearly] = useState(false);
 
   return (
-    <section id="pricing" className="px-6 py-32">
-      <div className="max-w-5xl mx-auto">
-
-        <div className="text-center mb-16">
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="eyebrow mb-4">
-            Pricing
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="headline text-white mb-6"
+    <section
+      id="pricing"
+      style={{
+        minHeight: "100svh",
+        display: "flex",
+        alignItems: "center",
+        padding: "120px 24px",
+      }}
+    >
+      <div style={{ maxWidth: 1000, margin: "0 auto", width: "100%" }}>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={{ marginBottom: 64 }}
+        >
+          <p className="eyebrow" style={{ marginBottom: 20 }}>Pricing</p>
+          <h2
+            style={{
+              fontSize: "clamp(32px, 5vw, 64px)",
+              fontWeight: 700,
+              letterSpacing: "-0.035em",
+              lineHeight: 1.08,
+              color: "#f5f5f5",
+              marginBottom: 32,
+            }}
           >
-            Simple pricing.<br /><span className="grad-accent">No surprises.</span>
-          </motion.h2>
+            Simple pricing.
+            <br />
+            <span className="grad-accent">No surprises.</span>
+          </h2>
 
-          {/* Toggle */}
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <span className="text-sm" style={{ color: yearly ? "#525252" : "#f5f5f5" }}>Monthly</span>
+          {/* Billing toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 14, color: yearly ? "#444" : "#f5f5f5", transition: "color 0.15s" }}>Monthly</span>
             <button
               onClick={() => setYearly((y) => !y)}
-              className="relative transition-colors"
-              style={{ width: 44, height: 24, borderRadius: 999, background: yearly ? "#6366f1" : "#1c1c1c", border: "1px solid rgba(255,255,255,0.1)" }}
               role="switch"
               aria-checked={yearly}
+              style={{
+                width: 40, height: 22, borderRadius: 999,
+                background: yearly ? "#6366f1" : "#1a1a1a",
+                border: "1px solid rgba(255,255,255,0.08)",
+                position: "relative",
+                cursor: "pointer",
+                transition: "background 0.2s",
+              }}
             >
               <motion.div
-                animate={{ x: yearly ? 20 : 2 }}
+                animate={{ x: yearly ? 18 : 2 }}
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                style={{ position: "absolute", top: 3, width: 16, height: 16, borderRadius: "50%", background: "#fff" }}
+                style={{ position: "absolute", top: 2, width: 16, height: 16, borderRadius: "50%", background: "#fff" }}
               />
             </button>
-            <span className="text-sm" style={{ color: yearly ? "#f5f5f5" : "#525252" }}>
-              Yearly <span style={{ color: "#4ade80", fontSize: 11 }}>save 20%</span>
+            <span style={{ fontSize: 14, color: yearly ? "#f5f5f5" : "#444", transition: "color 0.15s" }}>
+              Yearly{" "}
+              <span style={{ fontSize: 12, color: "#4ade80" }}>save 20%</span>
             </span>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {plans.map((plan, i) => (
+        {/* Cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }} className="max-lg:grid-cols-2 max-sm:grid-cols-1">
+          {PLANS.map((plan, i) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="rounded-2xl p-6 flex flex-col"
+              transition={{ delay: i * 0.07 }}
               style={{
-                background: plan.highlight ? "#6366f1" : "#0f0f0f",
-                border: plan.highlight ? "none" : "1px solid rgba(255,255,255,0.07)",
+                padding: "28px 24px",
+                borderRadius: 20,
+                background: plan.accent ? "#6366f1" : "#0f0f0f",
+                border: plan.accent ? "none" : "1px solid rgba(255,255,255,0.07)",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              <p className="font-semibold text-white mb-1">{plan.name}</p>
-              <p className="text-xs mb-5" style={{ color: plan.highlight ? "rgba(255,255,255,0.65)" : "#525252" }}>
+              <p style={{ fontWeight: 600, color: "#fff", marginBottom: 4, fontSize: 15 }}>{plan.name}</p>
+              <p style={{ fontSize: 12, color: plan.accent ? "rgba(255,255,255,0.55)" : "#444", marginBottom: 24 }}>
                 {plan.desc}
               </p>
 
-              <div className="mb-5">
-                <motion.span
-                  key={yearly ? "y" : "m"}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-white font-bold"
-                  style={{ fontSize: 28, letterSpacing: "-0.04em" }}
-                >
-                  {plan.price === 0 ? "Free" : `₹${yearly ? plan.yearlyPrice : plan.price}`}
-                </motion.span>
+              <motion.p
+                key={yearly ? "y" : "m"}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                  fontSize: 32,
+                  fontWeight: 700,
+                  color: "#fff",
+                  letterSpacing: "-0.04em",
+                  marginBottom: 24,
+                  lineHeight: 1,
+                }}
+              >
+                {plan.price === 0 ? "Free" : `₹${yearly ? plan.yearlyPrice : plan.price}`}
                 {plan.price > 0 && (
-                  <span className="text-xs ml-1" style={{ color: plan.highlight ? "rgba(255,255,255,0.5)" : "#525252" }}>/mo</span>
+                  <span style={{ fontSize: 13, fontWeight: 400, color: plan.accent ? "rgba(255,255,255,0.5)" : "#444" }}> /mo</span>
                 )}
-              </div>
+              </motion.p>
 
-              <ul className="space-y-2 flex-1 mb-6">
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, flex: 1, marginBottom: 24 }}>
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs"
-                    style={{ color: plan.highlight ? "rgba(255,255,255,0.8)" : "#a0a0a0" }}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ marginTop: 1, flexShrink: 0 }}>
-                      <path d="M2 6L5 9L10 3" stroke={plan.highlight ? "#fff" : "#6366f1"} strokeWidth="1.5" strokeLinecap="round"/>
+                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: plan.accent ? "rgba(255,255,255,0.8)" : "#888" }}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ marginTop: 1, flexShrink: 0 }} aria-hidden="true">
+                      <path d="M2 6L5 9L10 3" stroke={plan.accent ? "#fff" : "#6366f1"} strokeWidth="1.5" strokeLinecap="round"/>
                     </svg>
                     {f}
                   </li>
                 ))}
               </ul>
 
-              <Link href="/dashboard"
-                className="btn text-sm text-center"
+              <Link
+                href="/dashboard"
                 style={{
-                  background: plan.highlight ? "rgba(255,255,255,0.2)" : "#161616",
-                  color: "#fff",
-                  border: plan.highlight ? "1px solid rgba(255,255,255,0.25)" : "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 10,
-                  padding: "9px 0",
                   display: "block",
+                  textAlign: "center",
+                  padding: "10px 0",
+                  borderRadius: 12,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#fff",
+                  textDecoration: "none",
+                  background: plan.accent ? "rgba(255,255,255,0.18)" : "#1a1a1a",
+                  border: plan.accent ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.07)",
+                  transition: "opacity 0.15s",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 {plan.cta}
               </Link>

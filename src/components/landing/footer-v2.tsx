@@ -1,64 +1,72 @@
-"use client";
-
 import Link from "next/link";
 
 export function LandingFooter() {
   return (
-    <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+    <footer style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "64px 24px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 40, flexWrap: "wrap", marginBottom: 64 }}>
           {/* Brand */}
-          <div className="col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#6366f1" }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M7 1L13 7L7 13M1 7H13" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div
+                style={{
+                  width: 28, height: 28, borderRadius: 8,
+                  background: "#6366f1",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6H10M6.5 2L10 6L6.5 10" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span className="text-white font-semibold text-[15px] tracking-tight">FounderAI</span>
+              <span style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f5", letterSpacing: "-0.02em" }}>FounderAI</span>
             </div>
-            <p className="text-sm leading-relaxed mb-5" style={{ color: "#525252", maxWidth: 240 }}>
-              The AI operating system for startups. Validate, build, fund, and scale.
+            <p style={{ fontSize: 14, lineHeight: 1.65, color: "#444", maxWidth: 220 }}>
+              The AI operating system for startups.
             </p>
-            <div className="flex items-center gap-2">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="input text-sm flex-1"
-                style={{ maxWidth: 200, padding: "8px 12px", borderRadius: 8 }}
-              />
-              <button className="btn btn-primary text-xs" style={{ padding: "8px 14px", borderRadius: 8, flexShrink: 0 }}>
-                Subscribe
-              </button>
-            </div>
           </div>
 
           {/* Links */}
-          {[
-            { title: "Product", links: ["Features", "Pricing", "Changelog", "Roadmap"] },
-            { title: "Resources", links: ["Docs", "Blog", "Guides", "API"] },
-            { title: "Company", links: ["About", "Careers", "Privacy", "Terms"] },
-          ].map((col) => (
-            <div key={col.title}>
-              <p className="text-xs font-semibold text-white mb-4 uppercase tracking-wider">{col.title}</p>
-              <ul className="space-y-2.5">
-                {col.links.map((l) => (
-                  <li key={l}>
-                    <Link href="#" className="text-sm transition-colors hover:text-white" style={{ color: "#525252" }}>
-                      {l}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div style={{ display: "flex", gap: 64, flexWrap: "wrap" }}>
+            {[
+              { title: "Product",   links: ["Features", "Pricing", "Changelog"] },
+              { title: "Resources", links: ["Docs", "Blog", "Guides"] },
+              { title: "Company",   links: ["About", "Privacy", "Terms"] },
+            ].map((col) => (
+              <div key={col.title}>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "#f5f5f5", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  {col.title}
+                </p>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                  {col.links.map((l) => (
+                    <li key={l}>
+                      <Link
+                        href="#"
+                        style={{ fontSize: 14, color: "#444", textDecoration: "none", transition: "color 0.15s" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#f5f5f5")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "#444")}
+                      >
+                        {l}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <p className="text-xs" style={{ color: "#525252" }}>© 2025 FounderAI. All rights reserved.</p>
-          <div className="flex items-center gap-5">
-            {["Twitter", "GitHub", "LinkedIn", "Discord"].map((s) => (
-              <Link key={s} href="#" className="text-xs transition-colors hover:text-white" style={{ color: "#525252" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <p style={{ fontSize: 13, color: "#2a2a2a" }}>© 2025 FounderAI. All rights reserved.</p>
+          <div style={{ display: "flex", gap: 24 }}>
+            {["Twitter", "GitHub", "LinkedIn"].map((s) => (
+              <Link
+                key={s}
+                href="#"
+                style={{ fontSize: 13, color: "#2a2a2a", textDecoration: "none", transition: "color 0.15s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#888")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#2a2a2a")}
+              >
                 {s}
               </Link>
             ))}
