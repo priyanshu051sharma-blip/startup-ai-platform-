@@ -8,268 +8,226 @@ const VERBS = ["Build.", "Validate.", "Raise.", "Scale."];
 
 const HEADLINE_WORDS = ["The", "AI", "Operating", "System", "for", "Startups."];
 
-const FLOATING_BADGES = [
-  { label: "847 customers", icon: "👥", x: "8%",  y: "28%", delay: 0.9 },
-  { label: "₹4.2L MRR",    icon: "📈", x: "82%", y: "22%", delay: 1.1 },
-  { label: "18mo runway",  icon: "🛤️",  x: "5%",  y: "68%", delay: 1.3 },
-  { label: "94 pitch score", icon: "🎯", x: "80%", y: "65%", delay: 1.0 },
-  { label: "3Cr raised",   icon: "💰", x: "88%", y: "44%", delay: 1.5 },
+const STATS = [
+  { label: "847 Customers", x: "8%",  y: "28%", delay: 0.9  },
+  { label: "₹4.2L MRR",    x: "81%", y: "22%", delay: 1.1  },
+  { label: "18mo Runway",  x: "5%",  y: "68%", delay: 1.3  },
+  { label: "94/100 Pitch", x: "79%", y: "64%", delay: 1.0  },
+  { label: "₹3Cr Raised",  x: "87%", y: "44%", delay: 1.5  },
 ];
+
+function HeroCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    let id: number;
+    let t = 0;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Particles
+    const pts = Array.from({ length: 70 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.2 + 0.3,
+    }));
+
+    const draw = () => {
+      t += 0.005;
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      // Grid
+      const G = 90, off = (t * 15) % G;
+      ctx.strokeStyle = "rgba(99,102,241,0.04)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = -G + off % G; x < W + G; x += G) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+      for (let y = -G + off % G; y < H + G; y += G) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke();
+
+      // Diagonal lines
+      ctx.strokeStyle = "rgba(139,92,246,0.025)";
+      const D = 200, doff = (t * 25) % D;
+      ctx.beginPath();
+      for (let d = -H + doff; d < W + H; d += D) { ctx.moveTo(d, 0); ctx.lineTo(d + H, H); }
+      ctx.stroke();
+
+      // Particles + connections
+      pts.forEach(p => {
+        p.x = (p.x + p.vx + W) % W;
+        p.y = (p.y + p.vy + H) % H;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(165,180,252,0.5)";
+        ctx.fill();
+      });
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 130) {
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.strokeStyle = `rgba(99,102,241,${(1 - dist / 130) * 0.1})`;
+            ctx.lineWidth = 0.5; ctx.stroke();
+          }
+        }
+      }
+
+      // Pulsing rings
+      [[W * 0.15, H * 0.25], [W * 0.85, H * 0.65], [W * 0.5, H * 0.1]].forEach(([rx, ry], ri) => {
+        for (let s = 0; s < 3; s++) {
+          const rad = 50 + s * 70 + ((t * 20 + ri * 40) % 80);
+          const a = Math.max(0, 0.07 - rad / 1200);
+          ctx.beginPath();
+          ctx.arc(rx, ry, rad, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(99,102,241,${a})`; ctx.lineWidth = 1; ctx.stroke();
+        }
+      });
+
+      id = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />;
+}
 
 export function LandingHero() {
   const [vi, setVi] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
   useEffect(() => {
-    intervalRef.current = setInterval(() => setVi((x) => (x + 1) % VERBS.length), 1800);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    const id = setInterval(() => setVi(x => (x + 1) % VERBS.length), 2000);
+    return () => clearInterval(id);
   }, []);
 
   return (
-    <section
-      style={{
-        minHeight: "100svh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "0 24px",
-        position: "relative",
-        background: "#ffffff",
-        overflow: "hidden",
-      }}
-    >
-      {/* Pulsing gradient orb */}
-      <motion.div
-        aria-hidden="true"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.7, 0.5] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute",
-          top: "18%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 800,
-          height: 800,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(79,70,229,0.08) 0%, rgba(129,140,248,0.04) 40%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
+    <section style={{
+      minHeight: "100svh",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      textAlign: "center",
+      padding: "100px 24px 80px",
+      position: "relative",
+      background: "#000000",
+      overflow: "hidden",
+    }}>
+      {/* Animated canvas */}
+      <HeroCanvas />
 
-      {/* Secondary orb */}
-      <motion.div
-        aria-hidden="true"
-        animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        style={{
-          position: "absolute",
-          top: "60%",
-          left: "30%",
-          width: 500,
-          height: 500,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(245,197,24,0.06) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
+      {/* Big radial glow */}
+      <div aria-hidden style={{
+        position: "absolute", top: "30%", left: "50%",
+        transform: "translate(-50%,-50%)",
+        width: 900, height: 900, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(139,92,246,0.04) 40%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
 
       {/* Floating stat badges */}
-      {FLOATING_BADGES.map((badge) => (
-        <motion.div
-          key={badge.label}
-          aria-hidden="true"
-          initial={{ opacity: 0, scale: 0.7, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
+      {STATS.map(s => (
+        <motion.div key={s.label}
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1, y: [0, -7, 0] }}
           transition={{
-            opacity: { delay: badge.delay, duration: 0.4 },
-            scale:   { delay: badge.delay, duration: 0.4 },
-            y: { delay: badge.delay + 0.5, duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+            opacity: { delay: s.delay, duration: 0.4 },
+            scale:   { delay: s.delay, duration: 0.4 },
+            y: { delay: s.delay + 0.4, duration: 3.5, repeat: Infinity, ease: "easeInOut" },
           }}
           style={{
-            position: "absolute",
-            left: badge.x,
-            top: badge.y,
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "7px 14px",
-            borderRadius: 999,
-            background: "#ffffff",
-            border: "1px solid rgba(0,0,0,0.08)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#0a0a0f",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            zIndex: 2,
+            position: "absolute", left: s.x, top: s.y,
+            padding: "7px 14px", borderRadius: 999,
+            background: "rgba(99,102,241,0.1)",
+            border: "1px solid rgba(99,102,241,0.25)",
+            backdropFilter: "blur(10px)",
+            fontSize: 12, fontWeight: 700, color: "#a5b4fc",
+            whiteSpace: "nowrap", pointerEvents: "none", zIndex: 2,
           }}
           className="hidden lg:flex"
         >
-          <span style={{ fontSize: 14 }}>{badge.icon}</span>
-          {badge.label}
+          {s.label}
         </motion.div>
       ))}
 
-      {/* Eyebrow pill */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className="pill pill-accent"
-        style={{ marginBottom: 40, position: "relative", zIndex: 3 }}
-      >
+      {/* Eyebrow */}
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+        className="pill pill-accent" style={{ marginBottom: 36, position: "relative", zIndex: 3 }}>
         <span className="dot-online pulse-dot" style={{ display: "inline-block" }} />
-        6 AI agents running
+        6 AI Agents Running
       </motion.div>
 
-      {/* Headline — word-by-word stagger */}
-      <div
-        style={{
-          fontSize: "clamp(44px, 8vw, 96px)",
-          fontWeight: 800,
-          lineHeight: 1.02,
-          letterSpacing: "-0.05em",
-          color: "#0a0a0f",
-          maxWidth: 840,
-          marginBottom: 0,
-          position: "relative",
-          zIndex: 3,
-        }}
-        aria-label="The AI Operating System for Startups."
-      >
-        {HEADLINE_WORDS.map((word, i) => (
-          <motion.span
-            key={i}
-            initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
+      {/* Headline */}
+      <div style={{
+        fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 900,
+        lineHeight: 1.0, letterSpacing: "-0.05em",
+        maxWidth: 880, marginBottom: 0,
+        position: "relative", zIndex: 3,
+      }}>
+        {HEADLINE_WORDS.map((w, i) => (
+          <motion.span key={i}
+            initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 0.18 + i * 0.07, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            style={{ display: "inline-block", marginRight: "0.25em" }}
-          >
-            {word}
+            transition={{ delay: 0.15 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ display: "inline-block", marginRight: "0.22em", color: "#ffffff" }}>
+            {w}
           </motion.span>
         ))}
       </div>
 
-      {/* Cycling verb — big & dramatic */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        style={{
-          height: "clamp(56px, 9vw, 108px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          marginBottom: 32,
-          position: "relative",
-          zIndex: 3,
-        }}
-        aria-live="polite"
-        aria-label={VERBS[vi]}
-      >
+      {/* Cycling verb */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+        style={{ height: "clamp(52px,8vw,100px)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", marginBottom: 28, position: "relative", zIndex: 3 }}>
         <AnimatePresence mode="wait">
-          <motion.span
-            key={vi}
-            initial={{ y: "110%", opacity: 0, scale: 0.9 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: "-110%", opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.32, ease: [0.4, 0, 0.2, 1] }}
+          <motion.span key={vi}
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-110%", opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="grad-accent"
-            style={{
-              fontSize: "clamp(56px, 9vw, 108px)",
-              fontWeight: 900,
-              letterSpacing: "-0.05em",
-              lineHeight: 1.02,
-              display: "block",
-            }}
-          >
+            style={{ fontSize: "clamp(52px,8vw,100px)", fontWeight: 900, letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>
             {VERBS[vi]}
           </motion.span>
         </AnimatePresence>
       </motion.div>
 
-      {/* Subline */}
-      <motion.p
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        style={{
-          fontSize: 18,
-          lineHeight: 1.7,
-          color: "#52526b",
-          maxWidth: 480,
-          marginBottom: 48,
-          position: "relative",
-          zIndex: 3,
-        }}
-      >
-        One AI team. One workspace. CEO, CFO, CTO, CMO, Investor, Legal — working on your startup in real time.
+      {/* Sub */}
+      <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+        style={{ fontSize: 17, lineHeight: 1.75, color: "#888888", maxWidth: 460, marginBottom: 44, position: "relative", zIndex: 3 }}>
+        One AI team. One workspace. CEO, CFO, CTO, CMO, Investor & Legal — working on your startup 24/7.
       </motion.p>
 
-      {/* CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 64, position: "relative", zIndex: 3 }}
-      >
-        <Link href="/auth/signup" className="btn btn-primary" style={{ fontSize: 15, padding: "11px 26px" }}>
-          Start building free
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+      {/* CTAs */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
+        style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginBottom: 56, position: "relative", zIndex: 3 }}>
+        <Link href="/auth/signup" className="btn btn-primary" style={{ fontSize: 15, padding: "13px 28px" }}>
+          Start building free →
         </Link>
-        <Link href="#product" className="btn btn-secondary" style={{ fontSize: 15, padding: "11px 26px" }}>
+        <Link href="#product" className="btn btn-secondary" style={{ fontSize: 15, padding: "13px 28px" }}>
           See how it works
         </Link>
       </motion.div>
 
       {/* Social proof */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.85 }}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 28,
-          color: "#9898b0",
-          fontSize: 13,
-          flexWrap: "wrap",
-          justifyContent: "center",
-          position: "relative",
-          zIndex: 3,
-        }}
-      >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
+        style={{ display: "flex", alignItems: "center", gap: 24, color: "#444444", fontSize: 13, flexWrap: "wrap", justifyContent: "center", position: "relative", zIndex: 3 }}>
         <span>12,000+ founders</span>
-        <span style={{ color: "rgba(0,0,0,0.15)" }}>·</span>
+        <span>·</span>
         <span>₹240Cr+ raised</span>
-        <span style={{ color: "rgba(0,0,0,0.15)" }}>·</span>
+        <span>·</span>
         <span>Free to start</span>
       </motion.div>
 
       {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
-        style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", zIndex: 3 }}
-        aria-hidden="true"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            width: 1,
-            height: 40,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.12), transparent)",
-            margin: "0 auto",
-          }}
-        />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }}
+        style={{ position: "absolute", bottom: 36, left: "50%", transform: "translateX(-50%)", zIndex: 3 }}>
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}
+          style={{ width: 1, height: 44, background: "linear-gradient(to bottom, rgba(99,102,241,0.5), transparent)", margin: "0 auto" }} />
       </motion.div>
     </section>
   );

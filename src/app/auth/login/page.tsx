@@ -1,10 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getUser, setUser } from "@/lib/auth";
+
+function AuthCanvas() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = ref.current; if (!canvas) return;
+    const ctx = canvas.getContext("2d"); if (!ctx) return;
+    let id: number, t = 0;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize(); window.addEventListener("resize", resize);
+    const pts = Array.from({ length: 50 }, () => ({
+      x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+    }));
+    const draw = () => {
+      t += 0.004;
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      const G = 80, off = (t * 12) % G;
+      ctx.strokeStyle = "rgba(99,102,241,0.04)"; ctx.lineWidth = 1; ctx.beginPath();
+      for (let x = off % G - G; x < W + G; x += G) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+      for (let y = off % G - G; y < H + G; y += G) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+      ctx.stroke();
+      pts.forEach(p => {
+        p.x = (p.x + p.vx + W) % W; p.y = (p.y + p.vy + H) % H;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(165,180,252,0.35)"; ctx.fill();
+      });
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 120) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(99,102,241,${(1-d/120)*0.08})`; ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+      const cx = W / 2, cy = H / 2;
+      for (let s = 0; s < 3; s++) {
+        const r = 100 + s * 120 + ((t * 18) % 80);
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(99,102,241,${Math.max(0, 0.05 - r/3000)})`; ctx.lineWidth = 1; ctx.stroke();
+      }
+      id = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,14 +65,11 @@ export default function LoginPage() {
     if (!form.email || !form.password) { setError("Please fill in all fields."); return; }
     setLoading(true);
     await new Promise(r => setTimeout(r, 700));
-
-    // Check if user exists in localStorage
     const existing = getUser();
     if (existing && existing.email === form.email) {
       setUser(existing);
       router.push(existing.onboarded ? "/dashboard" : "/onboarding");
     } else {
-      // Demo: accept any credentials and create a session
       setUser({ id: crypto.randomUUID(), name: form.email.split("@")[0], email: form.email, createdAt: new Date().toISOString(), onboarded: false });
       router.push("/onboarding");
     }
@@ -32,98 +77,89 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{
-      minHeight: "100svh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)",
-      padding: "24px",
-    }}>
-      {/* Background orb */}
-      <div aria-hidden="true" style={{
-        position: "fixed", top: "30%", left: "50%", transform: "translate(-50%, -50%)",
-        width: 600, height: 600, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
+    <div style={{ minHeight: "100svh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative" }}>
+      <AuthCanvas />
+
+      {/* Glow */}
+      <div aria-hidden style={{ position: "fixed", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 65%)", pointerEvents: "none", zIndex: 0 }} />
 
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={{ duration: 0.4 }}
         style={{
-          width: "100%", maxWidth: 420,
-          background: "#ffffff",
-          borderRadius: 20,
-          padding: "40px 36px",
-          boxShadow: "0 8px 48px rgba(0,0,0,0.4)",
-          position: "relative",
-          zIndex: 1,
+          width: "100%", maxWidth: 440, position: "relative", zIndex: 1,
+          background: "rgba(10,10,10,0.85)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 16, padding: "40px 36px",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          boxShadow: "0 0 0 1px rgba(99,102,241,0.08), 0 32px 64px rgba(0,0,0,0.6)",
         }}
       >
+        {/* Logo */}
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 32, textDecoration: "none" }}>
-          <div style={{ width: 30, height: 30, borderRadius: 9, background: "#4f46e5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #6366f1, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 16px rgba(99,102,241,0.35)" }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </div>
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#0a0a0f", letterSpacing: "-0.02em" }}>FounderAI</span>
+          <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", letterSpacing: "-0.02em" }}>FounderAI</span>
         </Link>
 
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0a0a0f", letterSpacing: "-0.04em", marginBottom: 6 }}>Welcome back</h1>
-        <p style={{ fontSize: 14, color: "#52526b", marginBottom: 28 }}>Sign in to your workspace.</p>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.04em", marginBottom: 6 }}>Welcome back</h1>
+        <p style={{ fontSize: 14, color: "#666666", marginBottom: 28 }}>Sign in to your workspace.</p>
 
-        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#52526b", marginBottom: 6 }}>Email</label>
-            <input
-              style={{
-                width: "100%", padding: "10px 14px", fontSize: 14, borderRadius: 10,
-                border: "1.5px solid rgba(0,0,0,0.12)", background: "#f7f8fc", color: "#0a0a0f",
-                outline: "none", transition: "border-color 0.15s",
-              }}
-              type="email" placeholder="you@startup.com" value={form.email}
-              onChange={e => setForm(f => ({ ...f, email: e.target.value }))} autoComplete="email" />
-          </div>
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-              <label style={{ fontSize: 13, fontWeight: 600, color: "#52526b" }}>Password</label>
-              <Link href="#" style={{ fontSize: 12, color: "#4f46e5", textDecoration: "none" }}>Forgot?</Link>
+        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {["email", "password"].map(field => (
+            <div key={field}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#888888", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                {field === "email" ? "Email" : "Password"}
+              </label>
+              <input
+                type={field}
+                placeholder={field === "email" ? "you@startup.com" : "Your password"}
+                value={form[field as keyof typeof form]}
+                onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+                autoComplete={field === "email" ? "email" : "current-password"}
+                style={{
+                  width: "100%", padding: "11px 14px", fontSize: 14, borderRadius: 8,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(255,255,255,0.04)", color: "#ffffff",
+                  outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
+                  fontFamily: "inherit",
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#6366f1"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.18)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.boxShadow = "none"; }}
+              />
             </div>
-            <input
-              style={{
-                width: "100%", padding: "10px 14px", fontSize: 14, borderRadius: 10,
-                border: "1.5px solid rgba(0,0,0,0.12)", background: "#f7f8fc", color: "#0a0a0f",
-                outline: "none", transition: "border-color 0.15s",
-              }}
-              type="password" placeholder="Your password" value={form.password}
-              onChange={e => setForm(f => ({ ...f, password: e.target.value }))} autoComplete="current-password" />
-          </div>
+          ))}
 
           {error && (
-            <p style={{ fontSize: 13, color: "#dc2626", background: "#fee2e2", padding: "10px 14px", borderRadius: 8 }}>{error}</p>
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(255,23,68,0.1)", border: "1px solid rgba(255,23,68,0.2)", color: "#ff6b6b", fontSize: 13 }}>
+              {error}
+            </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
+          <button type="submit" disabled={loading}
             style={{
-              width: "100%", padding: "13px", fontSize: 15, marginTop: 4,
-              background: "#0a0a0f", color: "#fff", border: "none", borderRadius: 10,
+              width: "100%", padding: "13px", fontSize: 14, marginTop: 4, borderRadius: 8,
+              background: loading ? "rgba(99,102,241,0.5)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
+              color: "#fff", border: "none",
               fontWeight: 700, cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.7 : 1, transition: "opacity 0.15s",
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}
-          >
+              transition: "all 0.18s",
+              boxShadow: loading ? "none" : "0 0 20px rgba(99,102,241,0.3)",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              fontFamily: "inherit",
+            }}>
             {loading
-              ? <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />
+              ? <><span className="spin" style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block" }} /> Signing in…</>
               : "Sign in →"
             }
           </button>
         </form>
 
-        <p style={{ marginTop: 24, fontSize: 14, color: "#9898b0", textAlign: "center" }}>
+        <p style={{ marginTop: 24, fontSize: 14, color: "#555555", textAlign: "center" }}>
           Don&apos;t have an account?{" "}
-          <Link href="/auth/signup" style={{ color: "#4f46e5", fontWeight: 600, textDecoration: "none" }}>Create one free</Link>
+          <Link href="/auth/signup" style={{ color: "#a5b4fc", fontWeight: 600, textDecoration: "none" }}>Create one free</Link>
         </p>
       </motion.div>
     </div>

@@ -121,7 +121,7 @@ export function LandingProduct() {
               >
                 {cur.headline}
               </h3>
-              <p style={{ fontSize: 16, lineHeight: 1.75, color: "#888", marginBottom: 32 }}>
+              <p style={{ fontSize: 16, lineHeight: 1.75, color: "var(--text-2)", marginBottom: 32 }}>
                 {cur.body}
               </p>
               <Link href="/dashboard" className="btn btn-secondary" style={{ fontSize: 13 }}>

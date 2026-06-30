@@ -32,41 +32,55 @@ export default function AnalysisPage() {
   };
 
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", padding: "32px 28px 48px" }}>
+    <div style={{ maxWidth: 1080, margin: "0 auto", padding: "36px 32px 56px" }}>
       {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <p style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>AI Analysis Engine</p>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: "var(--text)", letterSpacing: "-0.04em", marginBottom: 6 }}>Run Startup Analysis</h1>
-        <p style={{ fontSize: 14, color: "var(--text-2)" }}>Choose a type and your AI team generates insights in seconds.</p>
+      <div style={{ marginBottom: 36 }}>
+        <p style={{ fontSize: 12, color: "rgba(165,180,252,0.6)", marginBottom: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>AI Analysis Engine</p>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.04em", marginBottom: 8, lineHeight: 1.1 }}>Run Startup Analysis</h1>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>Choose an analysis type and your AI team generates insights in seconds.</p>
       </div>
 
       {/* Type selector */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 28 }}>
         {TYPES.map(t => (
           <motion.button key={t.id} onClick={() => { setSelected(t.id); setResult(null); setError(null); }} whileTap={{ scale: 0.98 }}
-            style={{ padding: "16px 18px", borderRadius: 12, textAlign: "left", cursor: "pointer", border: selected === t.id ? "1.5px solid var(--accent)" : "1.5px solid var(--border)", background: selected === t.id ? "var(--accent-light)" : "var(--surface)", transition: "all 0.15s" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-              <span style={{ fontSize: 18 }}>{t.icon}</span>
-              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: selected === t.id ? "var(--accent)" : "var(--surface-2)", color: selected === t.id ? "#fff" : "var(--text-3)", fontWeight: 600 }}>{t.agent}</span>
+            style={{
+              padding: "18px 20px", borderRadius: 12, textAlign: "left", cursor: "pointer",
+              border: selected === t.id ? "1px solid rgba(99,102,241,0.5)" : "1px solid rgba(255,255,255,0.07)",
+              background: selected === t.id ? "rgba(99,102,241,0.1)" : "rgba(255,255,255,0.03)",
+              transition: "all 0.15s",
+              boxShadow: selected === t.id ? "0 0 20px rgba(99,102,241,0.12)" : "none",
+            }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>{t.icon}</span>
+              <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, background: selected === t.id ? "rgba(99,102,241,0.2)" : "rgba(255,255,255,0.06)", color: selected === t.id ? "#a5b4fc" : "rgba(255,255,255,0.35)", fontWeight: 600 }}>{t.agent}</span>
             </div>
-            <p style={{ fontSize: 13, fontWeight: 700, color: selected === t.id ? "var(--accent)" : "var(--text)", marginBottom: 3 }}>{t.label}</p>
-            <p style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5 }}>{t.desc}</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: selected === t.id ? "#a5b4fc" : "#ffffff", marginBottom: 5 }}>{t.label}</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>{t.desc}</p>
           </motion.button>
         ))}
       </div>
 
       {/* Run button */}
       <button onClick={run} disabled={loading}
-        style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 28px", borderRadius: 12, background: loading ? "var(--surface-3)" : "var(--accent)", color: loading ? "var(--text-3)" : "#fff", fontSize: 14, fontWeight: 700, border: "none", cursor: loading ? "not-allowed" : "pointer", marginBottom: 32, transition: "all 0.15s" }}>
-        {loading ? (
-          <><span className="spin" style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block" }} />Analyzing…</>
-        ) : (
-          <><span>⚡</span> Run {TYPES.find(t => t.id === selected)?.label}</>
-        )}
+        style={{
+          display: "flex", alignItems: "center", gap: 10, padding: "13px 32px", borderRadius: 10,
+          background: loading ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
+          color: loading ? "rgba(255,255,255,0.3)" : "#fff",
+          fontSize: 15, fontWeight: 700, border: "none", cursor: loading ? "not-allowed" : "pointer",
+          marginBottom: 36, transition: "all 0.18s", fontFamily: "inherit",
+          boxShadow: loading ? "none" : "0 0 24px rgba(99,102,241,0.3)",
+        }}>
+        {loading
+          ? <><span className="spin" style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block" }} /> Analyzing…</>
+          : <><span>⚡</span> Run {TYPES.find(t => t.id === selected)?.label}</>
+        }
       </button>
 
       {error && (
-        <div style={{ padding: "14px 18px", borderRadius: 12, background: "var(--red-light)", border: "1px solid rgba(220,38,38,0.2)", color: "var(--red)", fontSize: 14, marginBottom: 24 }}>{error}</div>
+        <div style={{ padding: "16px 20px", borderRadius: 10, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "#f87171", fontSize: 14, marginBottom: 28 }}>
+          {error}
+        </div>
       )}
 
       <AnimatePresence mode="wait">
@@ -92,40 +106,51 @@ function AnalysisResult({ type, data }: { type: AnalysisType; data: any }) {
 }
 
 function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return <div style={{ padding: 22, borderRadius: 14, background: "var(--surface)", border: "1px solid var(--border)", ...style }}>{children}</div>;
-}
-function Label({ children }: { children: React.ReactNode }) {
-  return <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 14 }}>{children}</p>;
-}
-function ScoreRing({ score, label }: { score: number; label: string }) {
-  const r = 26, circ = 2 * Math.PI * r;
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-      <div style={{ position: "relative", width: 64, height: 64 }}>
-        <svg width="64" height="64" style={{ transform: "rotate(-90deg)" }}>
-          <circle cx="32" cy="32" r={r} fill="none" stroke="var(--surface-2)" strokeWidth="5" />
-          <circle cx="32" cy="32" r={r} fill="none" stroke="var(--accent)" strokeWidth="5" strokeLinecap="round"
-            strokeDasharray={circ} strokeDashoffset={circ - (score / 100) * circ} style={{ transition: "stroke-dashoffset 1s ease" }} />
-        </svg>
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 16, fontWeight: 800, color: "var(--text)" }}>{score}</span>
-        </div>
-      </div>
-      <p style={{ fontSize: 10, color: "var(--text-3)", textAlign: "center" }}>{label}</p>
+    <div style={{
+      padding: 24, borderRadius: 12,
+      background: "rgba(6,6,18,0.85)",
+      border: "1px solid rgba(255,255,255,0.07)",
+      backdropFilter: "blur(12px)",
+      ...style
+    }}>
+      {children}
     </div>
   );
 }
-function scoreColor(s: number) { return s >= 80 ? "var(--accent)" : s >= 65 ? "var(--amber)" : "var(--red)"; }
+function Label({ children }: { children: React.ReactNode }) {
+  return <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(165,180,252,0.5)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16 }}>{children}</p>;
+}
+function ScoreRing({ score, label }: { score: number; label: string }) {
+  const r = 28, circ = 2 * Math.PI * r;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+      <div style={{ position: "relative", width: 70, height: 70 }}>
+        <svg width="70" height="70" style={{ transform: "rotate(-90deg)" }}>
+          <circle cx="35" cy="35" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+          <circle cx="35" cy="35" r={r} fill="none" stroke="#6366f1" strokeWidth="5" strokeLinecap="round"
+            strokeDasharray={circ} strokeDashoffset={circ - (score / 100) * circ} style={{ transition: "stroke-dashoffset 1s ease" }} />
+        </svg>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 18, fontWeight: 800, color: "#ffffff" }}>{score}</span>
+        </div>
+      </div>
+      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textAlign: "center" }}>{label}</p>
+    </div>
+  );
+}
+function scoreColor(s: number) { return s >= 80 ? "#a5b4fc" : s >= 65 ? "#fbbf24" : "#f87171"; }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function FullResult({ data }: { data: any }) {
-  const pc: Record<string, string> = { high: "var(--red)", medium: "var(--amber)", low: "var(--green)" };
+  const pc: Record<string, string> = { high: "#f87171", medium: "#fbbf24", low: "#4ade80" };
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <Card>
         <Label>Executive Summary</Label>
-        <p style={{ fontSize: 15, color: "var(--text)", lineHeight: 1.7, marginBottom: 20 }}>{data.summary}</p>
-        <div style={{ display: "flex", gap: 24 }}>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, marginBottom: 24 }}>{data.summary}</p>
+        <div style={{ display: "flex", gap: 28 }}>
           <ScoreRing score={data.overallScore} label="Overall" />
           {data.investorReadiness && <ScoreRing score={data.investorReadiness.score} label="Investor Ready" />}
         </div>
@@ -133,17 +158,17 @@ function FullResult({ data }: { data: any }) {
       {data.dimensions && (
         <Card>
           <Label>Dimension Scores</Label>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {data.dimensions.map((d: { name: string; score: number; insight: string; recommendation: string }) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {data.dimensions.map((d: { name: string; score: number; insight: string }) => (
               <div key={d.name}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>{d.name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: scoreColor(d.score) }}>{d.score}/100</span>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#ffffff" }}>{d.name}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: scoreColor(d.score) }}>{d.score}/100</span>
                 </div>
-                <div style={{ height: 3, background: "var(--surface-2)", borderRadius: 999, marginBottom: 5 }}>
+                <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 999, marginBottom: 6 }}>
                   <div style={{ height: "100%", width: `${d.score}%`, borderRadius: 999, background: scoreColor(d.score), transition: "width 0.8s ease" }} />
                 </div>
-                <p style={{ fontSize: 12, color: "var(--text-2)" }}>{d.insight}</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>{d.insight}</p>
               </div>
             ))}
           </div>
@@ -153,11 +178,13 @@ function FullResult({ data }: { data: any }) {
         <Card>
           <Label>SWOT Overview</Label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {[{ k: "strengths", l: "Strengths", c: "var(--green)" }, { k: "weaknesses", l: "Weaknesses", c: "var(--red)" }, { k: "opportunities", l: "Opportunities", c: "var(--accent)" }, { k: "threats", l: "Threats", c: "var(--amber)" }].map(({ k, l, c }) => (
-              <div key={k} style={{ padding: 14, borderRadius: 10, background: "var(--surface-2)", border: "1px solid var(--border)" }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: c, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l}</p>
+            {[{ k: "strengths", l: "Strengths", c: "#4ade80" }, { k: "weaknesses", l: "Weaknesses", c: "#f87171" }, { k: "opportunities", l: "Opportunities", c: "#a5b4fc" }, { k: "threats", l: "Threats", c: "#fbbf24" }].map(({ k, l, c }) => (
+              <div key={k} style={{ padding: 16, borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: c, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>{l}</p>
                 {(data.swot[k] as string[]).map((s: string, i: number) => (
-                  <p key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 4, display: "flex", gap: 6 }}><span style={{ color: c }}>·</span>{s}</p>
+                  <p key={i} style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", marginBottom: 5, display: "flex", gap: 8 }}>
+                    <span style={{ color: c, flexShrink: 0 }}>·</span>{s}
+                  </p>
                 ))}
               </div>
             ))}
@@ -169,13 +196,13 @@ function FullResult({ data }: { data: any }) {
           <Label>Top Recommendations</Label>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {data.topRecommendations.map((r: { priority: string; title: string; impact: string; effort: string; rationale: string }, i: number) => (
-              <div key={i} style={{ padding: "12px 14px", borderRadius: 10, background: "var(--surface-2)", border: "1px solid var(--border)", display: "flex", gap: 12 }}>
-                <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "transparent", color: pc[r.priority], border: `1px solid ${pc[r.priority]}`, fontWeight: 700, height: "fit-content", flexShrink: 0, whiteSpace: "nowrap" }}>{r.priority}</span>
+              <div key={i} style={{ padding: "14px 16px", borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", display: "flex", gap: 14 }}>
+                <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, background: "transparent", color: pc[r.priority], border: `1px solid ${pc[r.priority]}`, fontWeight: 700, height: "fit-content", flexShrink: 0, whiteSpace: "nowrap" }}>{r.priority}</span>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{r.title}</p>
-                  <p style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 5 }}>{r.rationale}</p>
-                  <div style={{ display: "flex", gap: 16, fontSize: 11, color: "var(--text-3)" }}>
-                    <span>Impact: <span style={{ color: "var(--accent)", fontWeight: 600 }}>{r.impact}</span></span>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", marginBottom: 4 }}>{r.title}</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 8, lineHeight: 1.55 }}>{r.rationale}</p>
+                  <div style={{ display: "flex", gap: 20, fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+                    <span>Impact: <span style={{ color: "#a5b4fc", fontWeight: 600 }}>{r.impact}</span></span>
                     <span>Effort: {r.effort}</span>
                   </div>
                 </div>
