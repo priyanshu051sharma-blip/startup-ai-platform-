@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, TrendingUp, BarChart3, DollarSign, Globe, Target, Mic, Bot, Settings, Zap } from "lucide-react";
+import { LayoutDashboard, TrendingUp, BarChart3, DollarSign, Globe, Target, Mic, Bot, Settings, Zap, Gift } from "lucide-react";
 import { getUser } from "@/lib/auth";
 
 const NAV = [
@@ -15,6 +15,7 @@ const NAV = [
   { icon: Globe,           label: "Market",      href: "/dashboard/market" },
   { icon: Target,          label: "Competitors", href: "/dashboard/competitors" },
   { icon: Mic,             label: "Pitch",       href: "/dashboard/pitch" },
+  { icon: Gift,            label: "Grants",      href: "/dashboard/grants" },
   { icon: Bot,             label: "AI Team",     href: "/dashboard/ai" },
   { icon: Settings,        label: "Settings",    href: "/dashboard/settings" },
 ];
