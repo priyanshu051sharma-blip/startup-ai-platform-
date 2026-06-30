@@ -2,33 +2,17 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Paperclip, RotateCcw } from "lucide-react";
+import { Send } from "lucide-react";
 
-interface Msg { id: string; role: "user" | "ai"; text: string; }
+interface Msg { id: string; role: "user" | "ai"; text: string; agent?: string; demo?: boolean; }
 
 const INIT: Msg[] = [{
   id: "0", role: "ai",
-  text: "Good morning. Your health score improved 3 points overnight. I flagged one high-priority action — your pricing is 23% below competitors. Want me to model the revenue impact of a price increase?",
+  text: "Good morning. Your health score improved 3 points overnight. Pricing is 23% below market — want me to model the revenue impact of a price increase?",
+  agent: "default",
 }];
 
 const PROMPTS = ["Model price increase", "What's my runway?", "Find grants", "Review pitch deck"];
-
-const RESPONSES: Record<string, string> = {
-  default: "Based on your current metrics, I've identified 3 actionable steps. The highest-impact change is your pricing — raising the Pro plan by ₹500/mo adds an estimated ₹18L ARR annually. Confidence: 92%.",
-  pricing: "Raising your Pro plan from ₹1,999 to ₹2,499/mo is still 14% below market average. At your current 220 Pro customers, that's +₹13.2L ARR annually. Churn risk at this level is low — estimated at 3–5%. Want me to model different scenarios?",
-  runway: "At ₹2.8L/month burn and ₹4.2L MRR, you have 18 months of runway. If MRR growth continues at 8%/month, you reach profitability in month 7 without additional funding.",
-  grant: "Found 3 grants you qualify for: DPIIT Startup India (₹25L, apply by Aug 31), DST NIDHI (₹50L, rolling), MSME Tech Upgrade (₹15L). Want me to draft the DPIIT application?",
-  pitch: "Your deck scores 8.4/10. The main gap: no 24-month financial projections — investors ask for this in 78% of seed rounds. I can generate the financial slides in about 2 minutes. Shall I?",
-};
-
-function getReply(msg: string): string {
-  const l = msg.toLowerCase();
-  if (l.includes("price") || l.includes("pricing") || l.includes("model")) return RESPONSES.pricing;
-  if (l.includes("runway") || l.includes("burn")) return RESPONSES.runway;
-  if (l.includes("grant") || l.includes("fund")) return RESPONSES.grant;
-  if (l.includes("pitch") || l.includes("deck")) return RESPONSES.pitch;
-  return RESPONSES.default;
-}
 
 export function AiChat() {
   const [msgs, setMsgs] = useState<Msg[]>(INIT);
@@ -44,125 +28,154 @@ export function AiChat() {
     const content = text ?? input.trim();
     if (!content || thinking) return;
     setInput("");
-    setMsgs((m) => [...m, { id: Date.now().toString(), role: "user", text: content }]);
+
+    const userMsg: Msg = { id: Date.now().toString(), role: "user", text: content };
+    setMsgs((m) => [...m, userMsg]);
     setThinking(true);
-    await new Promise((r) => setTimeout(r, 1600));
-    setMsgs((m) => [...m, { id: (Date.now() + 1).toString(), role: "ai", text: getReply(content) }]);
-    setThinking(false);
+
+    // Build history for context
+    const history = msgs
+      .filter((m) => m.role === "user" || m.role === "ai")
+      .map((m) => ({ role: m.role === "ai" ? "assistant" : "user" as const, content: m.text }))
+      .slice(-6); // last 6 messages
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: content, history }),
+      });
+
+      if (!res.ok) throw new Error("API error");
+
+      const contentType = res.headers.get("content-type") ?? "";
+
+      if (contentType.includes("text/event-stream")) {
+        // Streaming response (real OpenAI)
+        const aiMsgId = (Date.now() + 1).toString();
+        let agent = "default";
+        let accumulated = "";
+
+        setMsgs((m) => [...m, { id: aiMsgId, role: "ai", text: "", agent }]);
+
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
+          for (const line of lines) {
+            try {
+              const parsed = JSON.parse(line.slice(6));
+              if (parsed.type === "agent") { agent = parsed.agent; }
+              if (parsed.type === "text") {
+                accumulated += parsed.text;
+                setMsgs((m) => m.map((msg) => msg.id === aiMsgId ? { ...msg, text: accumulated, agent } : msg));
+              }
+            } catch { /* skip malformed lines */ }
+          }
+        }
+      } else {
+        // JSON demo response (no API key)
+        const json = await res.json();
+        setMsgs((m) => [...m, { id: (Date.now() + 1).toString(), role: "ai", text: json.text, agent: json.agent, demo: json.demo }]);
+      }
+    } catch {
+      setMsgs((m) => [...m, { id: (Date.now() + 1).toString(), role: "ai", text: "Something went wrong. Please try again.", agent: "default" }]);
+    } finally {
+      setThinking(false);
+    }
+  };
+
+  const agentLabel: Record<string, string> = {
+    CFO: "AI CFO", CEO: "AI CEO", CTO: "AI CTO",
+    CMO: "AI CMO", Investor: "AI Investor", Legal: "AI Legal", default: "FounderAI",
+  };
+  const agentColor: Record<string, string> = {
+    CFO: "#4ade80", CEO: "#f59e0b", CTO: "#6366f1",
+    CMO: "#ec4899", Investor: "#22c55e", Legal: "#a5b4fc", default: "#6366f1",
   };
 
   return (
-    <div className="rounded-2xl flex flex-col overflow-hidden" style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)", height: 420 }}>
+    <div style={{ borderRadius: 16, display: "flex", flexDirection: "column", overflow: "hidden", background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)", height: 440 }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md flex items-center justify-center"
-            style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.2)" }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="6" cy="6" r="4" stroke="#a5b4fc" strokeWidth="1.5"/>
-              <path d="M6 4V6L7.5 7.5" stroke="#a5b4fc" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-          </div>
-          <div>
-            <p className="text-white text-xs font-medium">AI Co-Founder</p>
-            <div className="flex items-center gap-1">
-              <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
-                className="dot-online" style={{ width: 5, height: 5 }} />
-              <span className="text-[10px]" style={{ color: "#525252" }}>Has full context</span>
-            </div>
-          </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366f1" }} className="pulse-dot" />
+          <p style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5" }}>AI Assistant</p>
         </div>
-        <button onClick={() => setMsgs(INIT)}
-          className="w-6 h-6 flex items-center justify-center rounded-md transition-colors hover:bg-[#161616]"
-          style={{ color: "#525252" }} aria-label="Reset">
-          <RotateCcw size={11} />
-        </button>
+        <span style={{ fontSize: 11, color: "#444" }}>6 agents active</span>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-none min-h-0">
-        <AnimatePresence initial={false}>
-          {msgs.map((m) => (
-            <motion.div key={m.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div
-                className="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed"
-                style={m.role === "user"
-                  ? { background: "#6366f1", color: "#fff", borderRadius: "16px 16px 4px 16px" }
-                  : { background: "#161616", color: "#a0a0a0", borderRadius: "16px 16px 16px 4px", border: "1px solid rgba(255,255,255,0.06)" }
-                }
-              >
-                {m.text}
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }} className="scrollbar-none">
+        {msgs.map((m) => (
+          <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: m.role === "user" ? "flex-end" : "flex-start", gap: 4 }}>
+            {m.role === "ai" && (
+              <p style={{ fontSize: 10, color: agentColor[m.agent ?? "default"] ?? "#6366f1", fontWeight: 600, paddingLeft: 2 }}>
+                {agentLabel[m.agent ?? "default"] ?? "FounderAI"}
+              </p>
+            )}
+            <div style={{
+              maxWidth: "85%",
+              padding: "10px 14px",
+              borderRadius: m.role === "user" ? "14px 14px 4px 14px" : "4px 14px 14px 14px",
+              background: m.role === "user" ? "#6366f1" : "#141414",
+              border: m.role === "user" ? "none" : "1px solid rgba(255,255,255,0.06)",
+              fontSize: 13,
+              color: "#f5f5f5",
+              lineHeight: 1.6,
+            }}>
+              {m.text || <span style={{ opacity: 0.4 }}>…</span>}
+            </div>
+            {m.demo && (
+              <p style={{ fontSize: 10, color: "#2a2a2a", paddingLeft: 2 }}>Demo mode · Add OPENAI_API_KEY for live AI</p>
+            )}
+          </div>
+        ))}
 
-        {/* Thinking */}
         <AnimatePresence>
           {thinking && (
-            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="flex justify-start">
-              <div className="rounded-2xl px-3.5 py-3" style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <div className="flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <motion.div key={i}
-                      animate={{ opacity: [0.3, 1, 0.3] }}
-                      transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                      style={{ width: 4, height: 4, borderRadius: "50%", background: "#6366f1" }}
-                    />
-                  ))}
-                </div>
+            <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <p style={{ fontSize: 10, color: "#6366f1", fontWeight: 600, marginBottom: 4 }}>FounderAI</p>
+              <div style={{ display: "flex", gap: 4, padding: "10px 14px", borderRadius: "4px 14px 14px 14px", background: "#141414", border: "1px solid rgba(255,255,255,0.06)", width: "fit-content" }}>
+                {[0, 1, 2].map((i) => (
+                  <motion.div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: "#444" }}
+                    animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.18 }} />
+                ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggested prompts */}
-      <div className="px-4 pb-2 flex gap-1.5 overflow-x-auto scrollbar-none flex-shrink-0">
+      {/* Prompts */}
+      <div style={{ display: "flex", gap: 6, padding: "8px 18px", overflowX: "auto", flexShrink: 0 }} className="scrollbar-none">
         {PROMPTS.map((p) => (
           <button key={p} onClick={() => send(p)} disabled={thinking}
-            className="flex-shrink-0 text-[10px] px-2.5 py-1.5 rounded-full whitespace-nowrap transition-colors disabled:opacity-40"
-            style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.07)", color: "#525252" }}
-            onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "#f5f5f5"; }}
-            onMouseLeave={(e) => { (e.target as HTMLElement).style.color = "#525252"; }}>
+            style={{ fontSize: 11, padding: "5px 12px", borderRadius: 999, background: "#141414", border: "1px solid rgba(255,255,255,0.07)", color: "#888", cursor: thinking ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.15s" }}>
             {p}
           </button>
         ))}
       </div>
 
       {/* Input */}
-      <div className="px-4 pb-3 flex-shrink-0">
-        <div className="flex items-center gap-2 rounded-xl px-3 py-2.5"
-          style={{ background: "#161616", border: "1px solid rgba(255,255,255,0.07)" }}>
-          <button className="flex-shrink-0" style={{ color: "#525252" }} aria-label="Attach">
-            <Paperclip size={13} />
-          </button>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") send(); }}
-            placeholder="Ask your AI Co-Founder…"
-            className="flex-1 bg-transparent text-xs text-white placeholder-[#525252] outline-none"
-            disabled={thinking}
-            aria-label="Chat input"
-          />
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => send()}
-            disabled={!input.trim() || thinking}
-            className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-30"
-            style={{ background: "#6366f1" }}
-            aria-label="Send"
-          >
-            <Send size={11} className="text-white" />
-          </motion.button>
-        </div>
+      <div style={{ padding: "10px 12px", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
+          placeholder="Ask your AI team anything…"
+          disabled={thinking}
+          style={{ flex: 1, background: "#141414", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "9px 14px", fontSize: 13, color: "#f5f5f5", outline: "none" }}
+        />
+        <button onClick={() => send()} disabled={thinking || !input.trim()}
+          style={{ width: 34, height: 34, borderRadius: 10, background: input.trim() && !thinking ? "#6366f1" : "#141414", border: "none", cursor: input.trim() && !thinking ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.15s" }}>
+          <Send size={13} color={input.trim() && !thinking ? "#fff" : "#444"} />
+        </button>
       </div>
     </div>
   );

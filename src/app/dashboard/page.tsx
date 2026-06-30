@@ -3,6 +3,7 @@ import { MetricRow } from "@/components/dashboard/metric-row";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
 import { HealthScore } from "@/components/dashboard/health-score";
 import { Recommendations } from "@/components/dashboard/recommendations";
+import { AiChat } from "@/components/dashboard/ai-chat";
 
 export default function DashboardPage() {
   return (
@@ -33,8 +34,9 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Right column — AI activity + recent */}
+          {/* Right column — AI chat + activity */}
           <div style={{ display: "flex", flexDirection: "column", gap: 24, minWidth: 0 }}>
+            <AiChat />
             <AiSummaryCard />
             <RecentActivity />
           </div>

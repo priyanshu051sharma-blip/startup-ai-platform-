@@ -164,6 +164,7 @@ export function LandingPricing() {
 
               <Link
                 href="/dashboard"
+                className="pricing-cta"
                 style={{
                   display: "block",
                   textAlign: "center",
@@ -175,10 +176,7 @@ export function LandingPricing() {
                   textDecoration: "none",
                   background: plan.accent ? "rgba(255,255,255,0.18)" : "#1a1a1a",
                   border: plan.accent ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.07)",
-                  transition: "opacity 0.15s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 {plan.cta}
               </Link>
