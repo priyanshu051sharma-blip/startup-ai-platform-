@@ -15,7 +15,7 @@ export function QuickActions() {
 
   return (
     <div style={{ padding: "16px 20px" }}>
-      <p style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginBottom: 14 }}>
+      <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-3)", marginBottom: 14 }}>
         Quick Actions
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -26,15 +26,15 @@ export function QuickActions() {
             style={{
               padding: "14px 14px",
               borderRadius: 10,
-              background: hovered === a.label ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${hovered === a.label ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.07)"}`,
+              background: hovered === a.label ? "var(--surface-3)" : "var(--surface-2)",
+              border: hovered === a.label ? "1px solid var(--border-2)" : "1px solid var(--border)",
               textDecoration: "none",
               transition: "all 0.15s",
             }}
           >
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: a.color, marginBottom: 8 }} />
-            <p style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", marginBottom: 3 }}>{a.label}</p>
-            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.4 }}>{a.desc}</p>
+            <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{a.label}</p>
+            <p style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.4 }}>{a.desc}</p>
           </Link>
         ))}
       </div>

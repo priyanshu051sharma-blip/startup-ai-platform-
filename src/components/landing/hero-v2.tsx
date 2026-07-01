@@ -115,8 +115,9 @@ export function LandingHero() {
       textAlign: "center",
       padding: "100px 24px 80px",
       position: "relative",
-      background: "#000000",
+      background: "var(--bg)",
       overflow: "hidden",
+      color: "var(--text)",
     }}>
       {/* Animated canvas */}
       <HeroCanvas />
@@ -174,7 +175,7 @@ export function LandingHero() {
             initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.15 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: "inline-block", marginRight: "0.22em", color: "#ffffff" }}>
+            style={{ display: "inline-block", marginRight: "0.22em", color: "var(--text)" }}>
             {w}
           </motion.span>
         ))}
@@ -198,7 +199,7 @@ export function LandingHero() {
 
       {/* Sub */}
       <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
-        style={{ fontSize: 17, lineHeight: 1.75, color: "#888888", maxWidth: 460, marginBottom: 44, position: "relative", zIndex: 3 }}>
+        style={{ fontSize: 17, lineHeight: 1.75, color: "var(--text-2)", maxWidth: 460, marginBottom: 44, position: "relative", zIndex: 3 }}>
         One AI team. One workspace. CEO, CFO, CTO, CMO, Investor & Legal — working on your startup 24/7.
       </motion.p>
 
@@ -215,7 +216,7 @@ export function LandingHero() {
 
       {/* Social proof */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-        style={{ display: "flex", alignItems: "center", gap: 24, color: "#444444", fontSize: 13, flexWrap: "wrap", justifyContent: "center", position: "relative", zIndex: 3 }}>
+        style={{ display: "flex", alignItems: "center", gap: 24, color: "var(--text-3)", fontSize: 13, flexWrap: "wrap", justifyContent: "center", position: "relative", zIndex: 3 }}>
         <span>12,000+ founders</span>
         <span>·</span>
         <span>₹240Cr+ raised</span>

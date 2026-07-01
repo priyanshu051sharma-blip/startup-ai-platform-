@@ -73,14 +73,14 @@ export default function SignupPage() {
 
   const inputStyle = (field: string) => ({
     width: "100%", padding: "11px 14px", fontSize: 14, borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.1)",
-    background: "rgba(255,255,255,0.04)", color: "#ffffff" as const,
+    border: "1px solid var(--border-2)",
+    background: "var(--bg-3)", color: "var(--text)",
     outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
     fontFamily: "inherit",
   });
 
   return (
-    <div style={{ minHeight: "100svh", background: "#000000", display: "flex", position: "relative" }}>
+    <div style={{ minHeight: "100svh", background: "var(--bg)", display: "flex", position: "relative" }}>
       <AuthCanvas />
 
       {/* Glow */}
@@ -92,19 +92,19 @@ export default function SignupPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          style={{ width: "100%", maxWidth: 420 }}
+          style={{ width: "100%", maxWidth: 520 }}
         >
           <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 36, textDecoration: "none" }}>
             <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #6366f1, #8b5cf6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 16px rgba(99,102,241,0.35)" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M7.5 2.5L12 7L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", letterSpacing: "-0.02em" }}>FounderAI</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.02em" }}>FounderAI</span>
           </Link>
 
-          <h1 style={{ fontSize: 30, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.04em", marginBottom: 8 }}>
+          <h1 style={{ fontSize: 30, fontWeight: 800, color: "var(--text)", letterSpacing: "-0.04em", marginBottom: 8 }}>
             Create your account
           </h1>
-          <p style={{ fontSize: 15, color: "#666666", marginBottom: 32 }}>
+          <p style={{ fontSize: 15, color: "var(--text-2)", marginBottom: 32 }}>
             Your AI startup team is ready. Let&apos;s go.
           </p>
 
@@ -140,16 +140,16 @@ export default function SignupPage() {
             <button type="submit" disabled={loading}
               style={{
                 width: "100%", padding: "13px", fontSize: 14, marginTop: 4, borderRadius: 8,
-                background: loading ? "rgba(99,102,241,0.5)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                color: "#fff", border: "none", fontWeight: 700,
+                background: loading ? "var(--accent-light)" : "var(--accent-light)",
+                color: "var(--text)", border: "none", fontWeight: 700,
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "all 0.18s",
-                boxShadow: loading ? "none" : "0 0 20px rgba(99,102,241,0.3)",
+                boxShadow: loading ? "none" : "0 20px 40px rgba(0,0,0,0.06)",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 fontFamily: "inherit",
               }}>
               {loading
-                ? <><span className="spin" style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block" }} /> Creating account…</>
+                ? <><span className="spin" style={{ width: 16, height: 16, border: "2px solid rgba(0,0,0,0.08)", borderTopColor: "var(--text)", borderRadius: "50%", display: "inline-block" }} /> Creating account…</>
                 : "Create account →"
               }
             </button>
@@ -159,9 +159,9 @@ export default function SignupPage() {
             Already have an account?{" "}
             <Link href="/auth/login" style={{ color: "#a5b4fc", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
           </p>
-          <p style={{ marginTop: 12, fontSize: 12, color: "#333333", textAlign: "center", lineHeight: 1.5 }}>
-            By creating an account you agree to our Terms and Privacy Policy.
-          </p>
+            <p style={{ marginTop: 12, fontSize: 12, color: "#333333", textAlign: "center", lineHeight: 1.5 }}>
+              By creating an account you agree to our <Link href="/terms" style={{ color: "var(--accent)", fontWeight: 600 }}>Terms</Link> and <Link href="/privacy" style={{ color: "var(--accent)", fontWeight: 600 }}>Privacy Policy</Link>.
+            </p>
         </motion.div>
       </div>
 
@@ -170,8 +170,8 @@ export default function SignupPage() {
         width: 460, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", padding: 48,
         position: "relative", zIndex: 1,
-        borderLeft: "1px solid rgba(255,255,255,0.05)",
-        background: "rgba(6,6,18,0.7)", backdropFilter: "blur(20px)",
+        borderLeft: "1px solid var(--border)",
+        background: "var(--surface)",
       }} className="hidden lg:flex">
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
           style={{ textAlign: "center" }}>
@@ -189,9 +189,9 @@ export default function SignupPage() {
             {FEATURES.map((item, i) => (
               <motion.div key={item.text}
                 initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.08 }}
-                style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 10, background: "var(--bg-3)", border: "1px solid var(--border)" }}>
                 <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
-                <span style={{ fontSize: 13, color: "#aaaaaa" }}>{item.text}</span>
+                <span style={{ fontSize: 13, color: "var(--text-2)" }}>{item.text}</span>
               </motion.div>
             ))}
           </div>
@@ -199,8 +199,8 @@ export default function SignupPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[["12,000+","Founders"],["₹240Cr+","Raised"],["94/100","Pitch score"],["4.9★","Rating"]].map(([v, l]) => (
               <div key={l} style={{ padding: "14px", borderRadius: 10, background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.12)", textAlign: "center" }}>
-                <p style={{ fontSize: 20, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.04em", lineHeight: 1 }}>{v}</p>
-                <p style={{ fontSize: 11, color: "#555555", marginTop: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{l}</p>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "var(--text)", letterSpacing: "-0.04em", lineHeight: 1 }}>{v}</p>
+                <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{l}</p>
               </div>
             ))}
           </div>

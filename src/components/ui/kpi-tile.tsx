@@ -75,11 +75,11 @@ export function KpiTile({ label, value, prefix = "", suffix = "", decimals = 0, 
       whileHover={{ y: -3 }}
       className={cn("relative rounded-[20px] p-4 flex flex-col gap-2 overflow-hidden", className)}
       style={{
-        background: "linear-gradient(145deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%)",
+        background: "rgba(255,255,255,0.03)",
         backdropFilter: "blur(40px)",
         WebkitBackdropFilter: "blur(40px)",
         border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)",
+        boxShadow: "0 18px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
       }}
     >
       {/* Colour bleed */}

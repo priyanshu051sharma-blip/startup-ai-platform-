@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { TopBar } from "@/components/dashboard/top-bar";
@@ -26,15 +26,15 @@ function AnimatedBg() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Particles
+    // Particles (soft, low-opacity for light background)
     const PARTICLE_COUNT = 60;
     const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.5 + 0.3,
-      alpha: Math.random() * 0.4 + 0.1,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.8 + 0.2,
+      alpha: Math.random() * 0.02 + 0.03, // 0.03 - 0.05
     }));
 
     const draw = () => {
@@ -47,7 +47,8 @@ function AnimatedBg() {
       // ── 1. Subtle animated grid ──
       const GRID = 80;
       const offset = (t * 12) % GRID; // scrolling grid
-      ctx.strokeStyle = "rgba(255,255,255,0.025)";
+      // subtle grid lines for light theme
+      ctx.strokeStyle = "rgba(0,0,0,0.03)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let x = -GRID + (offset % GRID); x < W + GRID; x += GRID) {
@@ -59,7 +60,7 @@ function AnimatedBg() {
       ctx.stroke();
 
       // ── 2. Diagonal scan lines (Nike diagonal energy) ──
-      ctx.strokeStyle = "rgba(255,255,255,0.015)";
+      ctx.strokeStyle = "rgba(0,0,0,0.02)";
       ctx.lineWidth = 1;
       const DIAG = 160;
       const diagOffset = (t * 20) % DIAG;
@@ -79,10 +80,10 @@ function AnimatedBg() {
         if (p.y < 0) p.y = H;
         if (p.y > H) p.y = 0;
 
-        // Draw particle
+        // Draw particle (very soft charcoal)
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+        ctx.fillStyle = `rgba(0,0,0,${p.alpha})`;
         ctx.fill();
       });
 
@@ -93,11 +94,11 @@ function AnimatedBg() {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 120) {
-            const alpha = (1 - dist / 120) * 0.08;
+            const alpha = (1 - dist / 120) * 0.03;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+            ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -115,10 +116,10 @@ function AnimatedBg() {
         const phase = t + ri * 1.1;
         for (let s = 0; s < 3; s++) {
           const radius = 40 + s * 55 + ((phase * 18) % 60);
-          const alpha = Math.max(0, 0.06 - radius / 2000);
+          const alpha = Math.max(0, 0.05 - radius / 2000);
           ctx.beginPath();
           ctx.arc(ring.x, ring.y, radius, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+          ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -140,7 +141,7 @@ function AnimatedBg() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 0,
+        zIndex: 1,
         pointerEvents: "none",
         opacity: 1,
       }}
@@ -150,6 +151,16 @@ function AnimatedBg() {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [theme] = useState(() => {
+    if (typeof window === "undefined") return "light";
+    try {
+      const stored = localStorage.getItem("founderai_theme");
+      if (stored === "dark" || stored === "light") return stored;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
+    } catch {
+      return "light";
+    }
+  });
 
   useEffect(() => {
     const user = getUser();
@@ -158,8 +169,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   return (
-    <div data-theme="dark" style={{ display: "flex", height: "100svh", overflow: "hidden", background: "#000000", position: "relative" }}>
-      {/* Canvas animated background */}
+    <div data-theme={theme} style={{ display: "flex", height: "100svh", overflow: "hidden", background: "var(--bg)", position: "relative" }}>
+      {/* Background generated abstract gradient art (soft, increased opacity) */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.18, background: "linear-gradient(120deg, rgba(245,245,250,1) 0%, rgba(240,246,255,1) 40%, rgba(255,250,240,1) 100%)" }} />
+      {/* Canvas animated background (particles on top of art) */}
       <AnimatedBg />
 
       {/* UI layer */}

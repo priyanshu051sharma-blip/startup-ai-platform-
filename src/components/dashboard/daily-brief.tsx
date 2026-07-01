@@ -37,7 +37,7 @@ export function DailyBrief() {
         </motion.div>
         <div>
           <h2 className="text-white font-bold text-[15px]">{greeting}, Founder 👋</h2>
-          <p className="text-[#737373] text-[11px]">Today's AI Startup Brief · {new Date().toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
+          <p className="text-[#737373] text-[11px]">Today&apos;s AI Startup Brief · {new Date().toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export function DailyBrief() {
               transition={{ delay: 0.1 + i * 0.07 }}
               whileHover={{ scale: 1.03, y: -1 }}
               className="flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] text-[#B4B4B4] hover:text-white transition-all group cursor-pointer"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+              style={{ background: "var(--surface-3)", border: "1px solid var(--border)" }}
             >
               <Icon size={11} style={{ color: item.color }} />
               <span>{item.text}</span>

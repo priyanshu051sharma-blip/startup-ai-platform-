@@ -14,7 +14,7 @@ export default function DashboardPage() {
 
       <div style={{ padding: "28px 32px 48px" }}>
         {/* Section label */}
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.25)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 14 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-3)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 14 }}>
           Key Metrics
         </p>
 
@@ -26,31 +26,16 @@ export default function DashboardPage() {
           {/* LEFT — charts + analysis */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
             {/* Revenue chart */}
-            <div style={{
-              borderRadius: 12, overflow: "hidden",
-              background: "rgba(6,6,18,0.85)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)",
-            }}>
+            <div className="card card-elevated" style={{ overflow: "hidden" }}>
               <RevenueChart />
             </div>
 
             {/* Health + Recommendations side by side */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-              <div style={{
-                borderRadius: 12, overflow: "hidden",
-                background: "rgba(6,6,18,0.85)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                backdropFilter: "blur(12px)",
-              }}>
+              <div className="card card-elevated" style={{ overflow: "hidden" }}>
                 <HealthScore />
               </div>
-              <div style={{
-                borderRadius: 12, overflow: "hidden",
-                background: "rgba(6,6,18,0.85)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                backdropFilter: "blur(12px)",
-              }}>
+              <div className="card card-elevated" style={{ overflow: "hidden" }}>
                 <Recommendations />
               </div>
             </div>
@@ -59,32 +44,17 @@ export default function DashboardPage() {
           {/* RIGHT — AI assistant + feed + actions */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
             {/* AI Chat */}
-            <div style={{
-              borderRadius: 12, overflow: "hidden",
-              background: "rgba(6,6,18,0.85)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)",
-            }}>
+            <div className="card card-elevated" style={{ overflow: "hidden" }}>
               <AiChat />
             </div>
 
             {/* Agent Feed */}
-            <div style={{
-              borderRadius: 12, overflow: "hidden",
-              background: "rgba(6,6,18,0.85)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)",
-            }}>
+            <div className="card card-elevated" style={{ overflow: "hidden" }}>
               <AgentFeed />
             </div>
 
             {/* Quick Actions */}
-            <div style={{
-              borderRadius: 12, overflow: "hidden",
-              background: "rgba(6,6,18,0.85)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)",
-            }}>
+            <div className="card card-elevated" style={{ overflow: "hidden" }}>
               <QuickActions />
             </div>
           </div>

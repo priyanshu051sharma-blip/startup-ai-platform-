@@ -19,14 +19,14 @@ export function InvestorChecklist() {
   const pct = Math.round((done / items.length) * 100);
 
   return (
-    <div className="rounded-2xl p-5" style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="rounded-2xl p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-white font-medium text-sm">Investor Readiness</h2>
         <span className="text-white font-semibold text-sm">{pct}%</span>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1 rounded-full mb-5" style={{ background: "rgba(255,255,255,0.06)" }}>
+      <div className="h-1 rounded-full mb-5" style={{ background: "var(--surface-3)" }}>
         <motion.div
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.6, ease: "easeOut" }}

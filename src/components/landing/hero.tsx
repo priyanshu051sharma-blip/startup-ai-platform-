@@ -211,7 +211,7 @@ export function Hero() {
               <ArrowRight size={17} className="group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="secondary" size="lg" className="gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: "var(--surface-3)" }}>
                 <Play size={11} fill="white" className="text-white ml-0.5" />
               </div>
               Watch Demo
@@ -255,10 +255,10 @@ export function Hero() {
             <div
               className="rounded-[32px] p-6 relative overflow-hidden"
               style={{
-                background: "linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02))",
+                background: "var(--surface-2)",
                 backdropFilter: "blur(40px)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 40px 120px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)",
+                border: "1px solid var(--border)",
+                boxShadow: "0 40px 120px rgba(0,0,0,0.5)",
               }}
             >
               {/* Inner glow */}
@@ -289,9 +289,9 @@ export function Hero() {
                   return (
                     <motion.div
                       key={m.label}
-                      animate={{ borderColor: isActive ? `${m.color}40` : "rgba(255,255,255,0.06)" }}
+                      animate={{ borderColor: isActive ? `${m.color}40` : "var(--border-2)" }}
                       className="rounded-2xl p-3.5 relative overflow-hidden"
-                      style={{ background: "rgba(255,255,255,0.04)", border: `1px solid rgba(255,255,255,0.06)` }}
+                      style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
                     >
                       {isActive && (
                         <motion.div
@@ -302,7 +302,7 @@ export function Hero() {
                         />
                       )}
                       <div className="flex items-start justify-between mb-1.5 relative">
-                        <span className="text-[#737373] text-[11px]">{m.label}</span>
+                        <span className="text-[var(--text-3)] text-[11px]">{m.label}</span>
                         <Icon size={12} style={{ color: m.color }} />
                       </div>
                       <p className="text-xl font-bold relative" style={{ color: m.color }}>{m.value}</p>
@@ -324,7 +324,7 @@ export function Hero() {
                     6 agents active
                   </motion.div>
                 </div>
-                <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--surface-3)" }}>
                   <motion.div
                     animate={{ width: ["15%", "85%", "45%", "70%"] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -374,7 +374,8 @@ export function Hero() {
         aria-hidden="true"
       >
         <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.8, repeat: Infinity }}
-          className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
+          className="w-5 h-8 rounded-full flex items-start justify-center pt-1.5"
+          style={{ border: "1px solid var(--border-2)" }}>
           <div className="w-1 h-2 rounded-full bg-[#4F8CFF]" />
         </motion.div>
       </motion.div>

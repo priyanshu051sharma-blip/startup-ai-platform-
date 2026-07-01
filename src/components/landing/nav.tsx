@@ -37,26 +37,20 @@ export function LandingNav() {
             <path d="M2 6.5H11M7 2L11 6.5L7 11" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <span style={{ color: "#ffffff", fontWeight: 700, fontSize: 15, letterSpacing: "-0.025em" }}>FounderAI</span>
+        <span style={{ color: "var(--text)", fontWeight: 700, fontSize: 15, letterSpacing: "-0.025em" }}>FounderAI</span>
       </Link>
 
       <nav style={{ display: "flex", alignItems: "center", gap: 32 }}>
-        <Link href="#product" style={{ color: "#888888", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#ffffff"}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#888888"}>
+        <Link href="#product" className="nav-text-link" style={{ fontSize: 14, fontWeight: 500 }}>
           Product
         </Link>
-        <Link href="#pricing" style={{ color: "#888888", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#ffffff"}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#888888"}>
+        <Link href="#pricing" className="nav-text-link" style={{ fontSize: 14, fontWeight: 500 }}>
           Pricing
         </Link>
       </nav>
 
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <Link href="/auth/login" style={{ color: "#888888", fontSize: 14, fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#ffffff"}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#888888"}>
+        <Link href="/auth/login" className="nav-text-link" style={{ fontSize: 14, fontWeight: 500 }}>
           Sign in
         </Link>
         <Link href="/auth/signup" className="btn btn-primary" style={{ fontSize: 13, padding: "8px 18px" }}>

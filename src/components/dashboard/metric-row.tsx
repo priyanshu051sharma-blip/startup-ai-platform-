@@ -57,7 +57,7 @@ function Tile({ label, target, prefix, suffix, decimals, change, up, index }: {
       onHoverEnd={() => setHovered(false)}
       style={{
         padding: "24px 22px",
-        background: hovered ? "rgba(255,255,255,0.04)" : "rgba(5,5,12,0.85)",
+        background: hovered ? "var(--surface-3)" : "var(--surface-2)",
         backdropFilter: "blur(12px)",
         transition: "background 0.2s",
         cursor: "default", position: "relative", overflow: "hidden",
@@ -68,7 +68,7 @@ function Tile({ label, target, prefix, suffix, decimals, change, up, index }: {
 
       <p style={{
         fontSize: 11, fontWeight: 600,
-        color: "rgba(255,255,255,0.35)",
+        color: "var(--text-3)",
         letterSpacing: "0.07em", textTransform: "uppercase",
         marginBottom: 12,
       }}>
@@ -78,7 +78,7 @@ function Tile({ label, target, prefix, suffix, decimals, change, up, index }: {
         ref={ref}
         style={{
           display: "block",
-          fontSize: 30, fontWeight: 800, color: "#ffffff",
+          fontSize: 30, fontWeight: 800, color: "var(--text)",
           letterSpacing: "-0.04em", lineHeight: 1,
           marginBottom: 10,
           fontVariantNumeric: "tabular-nums",
@@ -113,8 +113,8 @@ export function MetricRow() {
       display: "grid",
       gridTemplateColumns: "repeat(6, 1fr)",
       borderRadius: 12,
-      border: "1px solid rgba(255,255,255,0.07)",
-      background: "rgba(255,255,255,0.04)",
+      border: "1px solid var(--border)",
+      background: "var(--surface)",
       gap: "1px",
       overflow: "hidden",
     }}>

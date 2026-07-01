@@ -77,15 +77,15 @@ export function AiChatWidget() {
     <div
       className="flex flex-col h-full rounded-[24px] overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
+        background: "var(--surface-2)",
         backdropFilter: "blur(40px)",
         WebkitBackdropFilter: "blur(40px)",
-        border: "1px solid rgba(255,255,255,0.07)",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+        border: "1px solid var(--border)",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2.5">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -97,22 +97,28 @@ export function AiChatWidget() {
             <p className="text-white text-[13px] font-semibold">AI Co-Founder</p>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#10B981]" style={{ boxShadow: "0 0 5px rgba(16,185,129,0.8)" }} />
-              <span className="text-[#737373] text-[10px]">Always on • Has memory</span>
+              <span style={{ color: "var(--text-3)" }} className="text-[10px]">Always on • Has memory</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setMessages(INIT_MESSAGES)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#737373] hover:text-white hover:bg-white/[0.06] transition-all"
+            className="w-7 h-7 rounded-lg flex items-center justify-center hover:text-white transition-all"
+            style={{ color: "var(--text-3)", background: "transparent" }}
             aria-label="Reset conversation"
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface-3)" }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent" }}
           >
             <RotateCcw size={12} />
           </button>
           <button
             onClick={() => setExpanded((e) => !e)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#737373] hover:text-white hover:bg-white/[0.06] transition-all"
+            className="w-7 h-7 rounded-lg flex items-center justify-center hover:text-white transition-all"
+            style={{ color: "var(--text-3)", background: "transparent" }}
             aria-label={expanded ? "Collapse" : "Expand"}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface-3)" }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent" }}
           >
             {expanded ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
           </button>
@@ -146,7 +152,7 @@ export function AiChatWidget() {
                     ? { background: "linear-gradient(135deg,#4F8CFF,#6366f1)" }
                     : msg.type === "insight"
                     ? { background: "rgba(79,140,255,0.07)", border: "1px solid rgba(79,140,255,0.12)" }
-                    : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }
+                    : { background: "var(--surface-2)", border: "1px solid var(--border)" }
                 }
               >
                 {msg.content}
@@ -169,7 +175,7 @@ export function AiChatWidget() {
               </div>
               <div
                 className="rounded-[16px] rounded-tl-sm px-3 py-2.5"
-                style={{ background: "rgba(79,140,255,0.07)", border: "1px solid rgba(79,140,255,0.15)" }}
+                style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.18)" }}
               >
                 <NeuralThinking width={200} height={80} active={true} label="Thinking..." />
               </div>
@@ -187,7 +193,10 @@ export function AiChatWidget() {
             key={p}
             onClick={() => sendMessage(p)}
             disabled={thinking}
-            className="flex-shrink-0 text-[10px] px-2.5 py-1.5 rounded-full text-[#737373] hover:text-white border border-white/[0.07] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all disabled:opacity-40 whitespace-nowrap"
+            className="flex-shrink-0 text-[10px] px-2.5 py-1.5 rounded-full hover:text-white transition-all disabled:opacity-40 whitespace-nowrap"
+            style={{ color: "var(--text-3)", border: "1px solid var(--border)", background: "var(--surface-3)" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.border = "1px solid var(--border-2)"; (e.currentTarget as HTMLElement).style.background = "var(--surface)" }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.border = "1px solid var(--border)"; (e.currentTarget as HTMLElement).style.background = "var(--surface-3)" }}
           >
             {p}
           </button>
@@ -198,10 +207,11 @@ export function AiChatWidget() {
       <div className="px-3 pb-3 flex-shrink-0">
         <div
           className="flex gap-2 items-end rounded-[16px] px-3 py-2"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{ background: "var(--surface)", border: "1px solid var(--border-2)" }}
         >
           <button
-            className="w-6 h-6 flex items-center justify-center text-[#737373] hover:text-white transition-colors flex-shrink-0 mt-1"
+            className="w-6 h-6 flex items-center justify-center hover:text-white transition-colors flex-shrink-0 mt-1"
+            style={{ color: "var(--text-3)" }}
             aria-label="Attach file"
           >
             <Paperclip size={13} />

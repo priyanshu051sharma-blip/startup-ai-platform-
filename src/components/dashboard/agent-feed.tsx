@@ -25,10 +25,10 @@ export function AgentFeed() {
     <div>
       <div style={{
         padding: "16px 20px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid var(--border)",
         display: "flex", justifyContent: "space-between", alignItems: "center",
       }}>
-        <p style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.6)" }}>AI Team · Today</p>
+        <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-3)" }}>AI Team · Today</p>
         <Link href="/dashboard/analysis" style={{ fontSize: 13, color: "#a5b4fc", textDecoration: "none", fontWeight: 500 }}>
           View all →
         </Link>
@@ -43,9 +43,9 @@ export function AgentFeed() {
           onHoverEnd={() => setHovered(null)}
           style={{
             padding: "14px 20px",
-            borderBottom: i < items.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+            borderBottom: i < items.length - 1 ? "1px solid var(--border)" : "none",
             display: "flex", gap: 12, alignItems: "flex-start",
-            background: hovered === i ? "rgba(255,255,255,0.03)" : "transparent",
+            background: hovered === i ? "var(--surface-2)" : "transparent",
             transition: "background 0.15s", cursor: "default",
           }}
         >
@@ -54,9 +54,9 @@ export function AgentFeed() {
             <p style={{ fontSize: 12, fontWeight: 700, color: AGENT_COLORS[item.agent] ?? "#a5b4fc", marginBottom: 4 }}>
               {item.agent}
             </p>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>{item.msg}</p>
+            <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55 }}>{item.msg}</p>
           </div>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", flexShrink: 0, fontWeight: 500 }}>{item.time}</span>
+          <span style={{ fontSize: 11, color: "var(--text-4)", flexShrink: 0, fontWeight: 500 }}>{item.time}</span>
         </motion.div>
       ))}
     </div>

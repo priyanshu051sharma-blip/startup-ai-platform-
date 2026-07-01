@@ -34,8 +34,9 @@ export function DashboardTopNav() {
   return (
     <>
       <header className="h-14 flex items-center justify-between px-5 flex-shrink-0 relative z-20"
-        style={{ background: "rgba(5,5,5,0.7)", backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <motion.button whileHover={{ scale: 1.02 }} className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/5 transition-colors">
+        style={{ background: "rgba(5,5,5,0.85)", backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)", borderBottom: "1px solid var(--border)" }}>
+        <motion.button whileHover={{ scale: 1.02 }} className="flex items-center gap-2 px-3 py-1.5 rounded-xl transition-colors"
+          style={{ background: "var(--surface-3)" }}>
           <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: "linear-gradient(135deg,#4F8CFF,#7C3AED)" }}>
             <Zap size={10} className="text-white" />
           </div>
@@ -44,18 +45,20 @@ export function DashboardTopNav() {
         </motion.button>
         <motion.button onClick={openCmd} whileHover={{ scale: 1.01 }}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs text-gray-500 hover:text-white transition-colors w-52"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          style={{ background: "var(--surface-3)", border: "1px solid var(--border)" }}>
           <Search size={12} /><span className="flex-1 text-left">Search or command...</span>
-          <kbd className="text-xs bg-white/10 rounded px-1 py-0.5 text-gray-500">Ctrl+K</kbd>
+          <kbd className="text-xs" style={{ background: "var(--surface)", color: "var(--text-3)", padding: "0.125rem 0.35rem", borderRadius: 6 }}>Ctrl+K</kbd>
         </motion.button>
         <div className="flex items-center gap-1.5">
           <motion.button whileTap={{ scale: 0.92 }} onClick={() => setMicActive((a) => !a)}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${micActive ? "bg-blue-500/20 text-blue-400" : "text-gray-500 hover:text-white hover:bg-white/5"}`}>
+            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${micActive ? "bg-blue-500/20 text-blue-400" : "text-gray-500 hover:text-white"}`}
+            style={{ background: micActive ? undefined : "var(--surface-3)" }}>
             <Mic size={14} />
           </motion.button>
           <div className="relative">
             <motion.button whileTap={{ scale: 0.92 }} onClick={() => setNotifOpen((o) => !o)}
-              className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/5 relative">
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-white relative"
+              style={{ background: "var(--surface-3)" }}>
               <Bell size={14} />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full" />
             </motion.button>
@@ -63,14 +66,16 @@ export function DashboardTopNav() {
               {notifOpen && (
                 <motion.div initial={{ opacity: 0, scale: 0.95, y: -8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: -8 }}
                   className="absolute right-0 top-10 w-72 rounded-2xl overflow-hidden z-50"
-                  style={{ background: "rgba(12,12,14,0.98)", backdropFilter: "blur(40px)", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+                  style={{ background: "rgba(12,12,14,0.98)", backdropFilter: "blur(40px)", border: "1px solid var(--border)", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
+                  <div className="flex items-center justify-between px-4 py-3"
+                    style={{ borderBottom: "1px solid var(--border)", background: "var(--surface-3)" }}>
                     <p className="text-white text-xs font-semibold">Notifications</p>
                     <button className="text-blue-400 text-xs">Mark all read</button>
                   </div>
                   {notifications.map((n, i) => (
                     <motion.div key={n.id} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-                      className="flex items-start gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0">
+                      className="flex items-start gap-3 px-4 py-3 cursor-pointer last:border-0"
+                      style={{ borderBottom: "1px solid var(--border)", background: "var(--surface-3)" }}>
                       <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: n.color }} />
                       <div className="flex-1 min-w-0">
                         <p className="text-white text-xs font-medium">{n.title}</p>
@@ -99,31 +104,35 @@ export function DashboardTopNav() {
             <motion.div initial={{ opacity: 0, scale: 0.96, y: -16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: -16 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
               className="w-full max-w-lg rounded-3xl overflow-hidden"
-              style={{ background: "rgba(8,8,10,0.99)", backdropFilter: "blur(60px)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 40px 120px rgba(0,0,0,0.7)" }}
+              style={{ background: "rgba(8,8,10,0.99)", backdropFilter: "blur(60px)", border: "1px solid var(--border)", boxShadow: "0 40px 120px rgba(0,0,0,0.7)" }}
               onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-white/5">
+              <div className="flex items-center gap-3 px-5 py-4"
+                style={{ borderBottom: "1px solid var(--border)", background: "var(--surface-3)" }}>
                 <Command size={15} className="text-blue-400 flex-shrink-0" />
                 <input autoFocus type="text" value={query} onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search or type a command..." className="flex-1 bg-transparent text-white text-sm placeholder:text-gray-500 focus:outline-none" />
-                <kbd className="text-xs text-gray-500 bg-white/5 rounded-lg px-2 py-1 cursor-pointer" onClick={closeCmd}>ESC</kbd>
+                <kbd className="text-xs text-gray-500 rounded-lg px-2 py-1 cursor-pointer" style={{ background: "var(--surface)", color: "var(--text-3)" }} onClick={closeCmd}>ESC</kbd>
               </div>
               <div className="p-2 max-h-80 overflow-y-auto">
                 {filtered.map((cmd, i) => {
                   const Icon = cmd.icon;
                   return (
                     <motion.button key={cmd.label} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 text-left transition-all group">
-                      <div className="w-7 h-7 rounded-xl flex items-center justify-center bg-white/5 group-hover:bg-blue-500/15 transition-colors flex-shrink-0">
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white text-left transition-all group"
+                      style={{ background: "var(--surface-3)", border: "1px solid var(--border)" }}>
+                      <div className="w-7 h-7 rounded-xl flex items-center justify-center transition-colors flex-shrink-0"
+                        style={{ background: "var(--surface-3)" }}>
                         <Icon size={13} className="group-hover:text-blue-400 transition-colors" />
                       </div>
                       <span className="flex-1">{cmd.label}</span>
-                      <span className="text-xs text-gray-500 bg-white/5 rounded px-1.5 py-0.5">{cmd.category}</span>
+                      <span className="text-xs rounded px-1.5 py-0.5" style={{ background: "var(--surface)", color: "var(--text-3)" }}>{cmd.category}</span>
                       <ArrowRight size={12} className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.button>
                   );
                 })}
               </div>
-              <div className="flex items-center gap-4 px-5 py-2.5 border-t border-white/5 text-xs text-gray-500">
+              <div className="flex items-center gap-4 px-5 py-2.5 text-xs text-gray-500"
+                style={{ borderTop: "1px solid var(--border)", background: "var(--surface-3)" }}>
                 <span>Esc to close</span>
                 <span className="ml-auto text-blue-400 font-medium">FounderAI OS</span>
               </div>

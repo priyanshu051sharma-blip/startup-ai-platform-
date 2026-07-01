@@ -189,7 +189,7 @@ export function InteractiveDemo() {
               >
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-white font-semibold">
-                    Analysis: <span className="gradient-text-blue">"{result.startup}"</span>
+                    Analysis: <span className="gradient-text-blue">{`"${result.startup}"`}</span>
                   </h3>
                   <button
                     onClick={reset}

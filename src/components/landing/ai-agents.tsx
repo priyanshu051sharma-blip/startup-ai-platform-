@@ -122,8 +122,8 @@ export function AiAgents() {
                 onClick={() => setActive(agent)}
                 className="rounded-2xl p-4 text-left border transition-all focus-visible:outline-none"
                 style={{
-                  background: active.id === agent.id ? `${agent.color}10` : "rgba(255,255,255,0.03)",
-                  borderColor: active.id === agent.id ? `${agent.color}30` : "rgba(255,255,255,0.07)",
+                  background: active.id === agent.id ? `${agent.color}10` : "var(--surface)",
+                  borderColor: active.id === agent.id ? `${agent.color}30` : "var(--border)",
                   backdropFilter: "blur(20px)",
                 }}
                 aria-pressed={active.id === agent.id}
@@ -176,7 +176,7 @@ export function AiAgents() {
                 </div>
               </div>
 
-              <p className="text-[#B4B4B4] leading-relaxed mb-6">
+              <p className="text-[var(--text-2)] leading-relaxed mb-6">
                 {active.description}
               </p>
 

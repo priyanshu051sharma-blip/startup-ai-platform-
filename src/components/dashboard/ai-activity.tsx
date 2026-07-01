@@ -12,7 +12,7 @@ const EVENTS = [
 
 export function AiActivity() {
   return (
-    <div className="rounded-2xl p-5" style={{ background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="rounded-2xl p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-white font-medium text-sm">AI Activity</h2>
         <span className="text-[10px]" style={{ color: "#525252" }}>{EVENTS.length} events</span>
@@ -38,7 +38,7 @@ export function AiActivity() {
                 }}
               />
               {i < EVENTS.length - 1 && (
-                <div style={{ width: 1, flex: 1, background: "rgba(255,255,255,0.05)", marginTop: 4, minHeight: 16 }} />
+                <div style={{ width: 1, flex: 1, background: "var(--border)", marginTop: 4, minHeight: 16 }} />
               )}
             </div>
 
@@ -46,9 +46,9 @@ export function AiActivity() {
             <div className="flex-1 min-w-0 pb-2">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs font-medium text-white leading-snug">{ev.title}</p>
-                <span className="text-[10px] flex-shrink-0 mt-0.5" style={{ color: "#525252" }}>{ev.time}</span>
+                <span className="text-[10px] flex-shrink-0 mt-0.5" style={{ color: "var(--text-3)" }}>{ev.time}</span>
               </div>
-              <p className="text-[11px] mt-0.5 truncate" style={{ color: "#525252" }}>{ev.detail}</p>
+              <p className="text-[11px] mt-0.5 truncate" style={{ color: "var(--text-3)" }}>{ev.detail}</p>
             </div>
           </motion.div>
         ))}

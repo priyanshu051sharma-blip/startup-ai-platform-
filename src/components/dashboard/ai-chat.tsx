@@ -4,6 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send } from "lucide-react";
 
+function createId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `msg_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+}
+
 interface Msg { id: string; role: "user" | "ai"; text: string; agent?: string; demo?: boolean; }
 
 const INIT: Msg[] = [{
@@ -37,7 +44,7 @@ export function AiChat() {
     const content = text ?? input.trim();
     if (!content || thinking) return;
     setInput("");
-    const userMsg: Msg = { id: Date.now().toString(), role: "user", text: content };
+    const userMsg: Msg = { id: createId(), role: "user", text: content };
     setMsgs(m => [...m, userMsg]);
     setThinking(true);
 
@@ -56,10 +63,8 @@ export function AiChat() {
       const contentType = res.headers.get("content-type") ?? "";
 
       if (contentType.includes("text/event-stream")) {
-        const aiMsgId = (Date.now() + 1).toString();
-        let agent = "default";
-        let accumulated = "";
-        setMsgs(m => [...m, { id: aiMsgId, role: "ai", text: "", agent }]);
+        const aiMsgId = createId();
+        setMsgs(m => [...m, { id: aiMsgId, role: "ai", text: "", agent: "default" }]);
         const reader = res.body!.getReader();
         const decoder = new TextDecoder();
         while (true) {
@@ -69,10 +74,11 @@ export function AiChat() {
           for (const line of lines) {
             try {
               const p = JSON.parse(line.slice(6));
-              if (p.type === "agent") agent = p.agent;
+              if (p.type === "agent") {
+                setMsgs(m => m.map(msg => msg.id === aiMsgId ? { ...msg, agent: p.agent } : msg));
+              }
               if (p.type === "text") {
-                accumulated += p.text;
-                setMsgs(m => m.map(msg => msg.id === aiMsgId ? { ...msg, text: accumulated, agent } : msg));
+                setMsgs(m => m.map(msg => msg.id === aiMsgId ? { ...msg, text: msg.text + p.text } : msg));
               }
             } catch { /* skip */ }
           }
@@ -93,16 +99,17 @@ export function AiChat() {
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", flexShrink: 0,
+        padding: "16px 20px", borderBottom: "1px solid var(--border)", flexShrink: 0,
+        background: "var(--surface)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <motion.div
             animate={{ opacity: [1, 0.3, 1] }}
             transition={{ duration: 1.6, repeat: Infinity }}
             style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80" }} />
-          <p style={{ fontSize: 14, fontWeight: 600, color: "#ffffff" }}>AI Assistant</p>
+          <p style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>AI Assistant</p>
         </div>
-        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>6 agents active</span>
+        <span style={{ fontSize: 12, color: "var(--text-3)" }}>6 agents active</span>
       </div>
 
       {/* Messages */}
@@ -120,14 +127,14 @@ export function AiChat() {
             )}
             <div style={{
               maxWidth: "88%", padding: "10px 14px", borderRadius: 10,
-              background: m.role === "user" ? "linear-gradient(135deg, #6366f1, #8b5cf6)" : "rgba(255,255,255,0.05)",
-              border: m.role === "user" ? "none" : "1px solid rgba(255,255,255,0.08)",
+              background: m.role === "user" ? "linear-gradient(135deg, #6366f1, #8b5cf6)" : "var(--surface-2)",
+              border: m.role === "user" ? "none" : "1px solid var(--border)",
               fontSize: 13, color: "#ffffff", lineHeight: 1.65, fontWeight: m.role === "user" ? 500 : 400,
             }}>
               {m.text || <span style={{ opacity: 0.3 }}>…</span>}
             </div>
             {m.demo && (
-              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", paddingLeft: 2 }}>
+              <p style={{ fontSize: 11, color: "var(--text-4)", paddingLeft: 2 }}>
                 Demo mode · Add OPENAI_API_KEY for live AI
               </p>
             )}
@@ -138,7 +145,7 @@ export function AiChat() {
           {thinking && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <p style={{ fontSize: 11, color: AGENT_COLOR.default, fontWeight: 700, marginBottom: 4 }}>FounderAI</p>
-              <div style={{ display: "flex", gap: 5, padding: "10px 14px", borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", width: "fit-content" }}>
+              <div style={{ display: "flex", gap: 5, padding: "10px 14px", borderRadius: 10, background: "var(--surface-2)", border: "1px solid var(--border)", width: "fit-content" }}>
                 {[0, 1, 2].map(i => (
                   <motion.div key={i}
                     style={{ width: 5, height: 5, borderRadius: "50%", background: "#6366f1" }}
@@ -153,47 +160,47 @@ export function AiChat() {
       </div>
 
       {/* Quick prompts */}
-      <div style={{ display: "flex", gap: 6, padding: "10px 20px", overflowX: "auto", flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.05)" }} className="scrollbar-none">
+      <div style={{ display: "flex", gap: 6, padding: "10px 20px", overflowX: "auto", flexShrink: 0, borderTop: "1px solid var(--border)" }} className="scrollbar-none">
         {PROMPTS.map(p => (
           <button key={p} onClick={() => send(p)} disabled={thinking}
             style={{
               fontSize: 12, padding: "5px 12px", borderRadius: 999,
-              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-              color: "rgba(255,255,255,0.5)", cursor: thinking ? "not-allowed" : "pointer",
+              background: "var(--surface-2)", border: "1px solid var(--border)",
+              color: "var(--text-3)", cursor: thinking ? "not-allowed" : "pointer",
               whiteSpace: "nowrap", flexShrink: 0, fontFamily: "inherit", fontWeight: 500,
               transition: "all 0.15s",
             }}
-            onMouseEnter={e => { if (!thinking) { (e.currentTarget as HTMLElement).style.color = "#fff"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.2)"; }}}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.5)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)"; }}>
+            onMouseEnter={e => { if (!thinking) { (e.currentTarget as HTMLElement).style.color = "var(--text)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--border-2)"; }}}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-3)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; }}>
             {p}
           </button>
         ))}
       </div>
 
       {/* Input */}
-      <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+      <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
         <input value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
           placeholder="Ask your AI team anything…"
           disabled={thinking}
           style={{
-            flex: 1, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#ffffff", outline: "none",
+            flex: 1, background: "var(--surface-2)", border: "1px solid var(--border)",
+            borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "var(--text)", outline: "none",
             fontFamily: "inherit", fontWeight: 400, transition: "border-color 0.15s",
           }}
           onFocus={e => (e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)")}
-          onBlur={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")} />
+          onBlur={e => (e.currentTarget.style.borderColor = "var(--border)")} />
         <button onClick={() => send()} disabled={thinking || !input.trim()}
           style={{
             width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-            background: input.trim() && !thinking ? "linear-gradient(135deg, #6366f1, #8b5cf6)" : "rgba(255,255,255,0.05)",
+            background: input.trim() && !thinking ? "linear-gradient(135deg, #6366f1, #8b5cf6)" : "var(--surface-2)",
             border: "none", cursor: input.trim() && !thinking ? "pointer" : "not-allowed",
             display: "flex", alignItems: "center", justifyContent: "center",
             transition: "all 0.15s",
             boxShadow: input.trim() && !thinking ? "0 0 16px rgba(99,102,241,0.3)" : "none",
           }}>
-          <Send size={14} color={input.trim() && !thinking ? "#fff" : "rgba(255,255,255,0.25)"} />
+          <Send size={14} color={input.trim() && !thinking ? "#fff" : "var(--text-3)"} />
         </button>
       </div>
     </div>

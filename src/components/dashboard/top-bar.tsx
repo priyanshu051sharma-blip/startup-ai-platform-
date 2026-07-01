@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, X, Zap } from "lucide-react";
+import { Search, Bell, X, Zap, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const DynamicThemeToggle = dynamic(() => import("@/components/ui/theme-toggle"), { ssr: false });
 
 const COMMANDS = [
   { label: "Run Startup Analysis",    shortcut: "A", href: "/dashboard/analysis",   tag: "Analysis", icon: "⚡" },
@@ -17,8 +20,22 @@ const COMMANDS = [
 export function TopBar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [theme, setTheme] = useState<string>(() => {
+    try { return localStorage.getItem("founderai_theme") || "light"; } catch { return "light"; }
+  });
   const router = useRouter();
   const close = useCallback(() => { setOpen(false); setQuery(""); }, []);
+
+  const toggleTheme = () => {
+    try {
+      const next = theme === "dark" ? "light" : "dark";
+      localStorage.setItem("founderai_theme", next);
+      // update first element with data-theme (dashboard root)
+      const root = document.querySelector('[data-theme]');
+      if (root) root.setAttribute('data-theme', next);
+      setTheme(next);
+    } catch (e) { /* ignore */ }
+  };
 
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
@@ -37,42 +54,40 @@ export function TopBar() {
       <header style={{
         height: 56, display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 24px",
-        background: "rgba(2,2,8,0.92)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "var(--surface)",
+        borderBottom: "1px solid var(--border)",
         flexShrink: 0,
       }}>
         {/* Breadcrumb */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Zap size={14} color="#6366f1" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>My Startup</span>
-          <span style={{ fontSize: 14, color: "rgba(255,255,255,0.2)" }}>/</span>
-          <span style={{ fontSize: 14, fontWeight: 400, color: "rgba(255,255,255,0.4)" }}>Overview</span>
+          <Zap size={14} color="var(--accent)" />
+          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>My Startup</span>
+          <span style={{ fontSize: 14, color: "var(--text-3)" }}>/</span>
+          <span style={{ fontSize: 14, fontWeight: 400, color: "var(--text-3)" }}>Overview</span>
         </div>
 
         {/* Search trigger */}
         <motion.button
           onClick={() => { setOpen(true); setQuery(""); }}
-          whileHover={{ borderColor: "rgba(255,255,255,0.2)" }}
+          whileHover={{ borderColor: "var(--border)" }}
           whileTap={{ scale: 0.98 }}
           style={{
-            display: "flex", alignItems: "center", gap: 10, padding: "8px 16px",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 8,
-            color: "rgba(255,255,255,0.35)", fontSize: 14, cursor: "pointer", minWidth: 240,
-            fontWeight: 400, fontFamily: "inherit",
-            transition: "all 0.15s",
-          }}
+              display: "flex", alignItems: "center", gap: 10, padding: "8px 16px",
+              background: "var(--bg-3)",
+              border: "1px solid var(--border-2)",
+              borderRadius: 8,
+              color: "var(--text-3)", fontSize: 14, cursor: "pointer", minWidth: 240,
+              fontWeight: 400, fontFamily: "inherit",
+              transition: "all 0.15s",
+            }}
           aria-label="Open command palette (Ctrl+K)"
         >
-          <Search size={14} style={{ color: "rgba(255,255,255,0.25)", flexShrink: 0 }} />
-          <span style={{ flex: 1, textAlign: "left" }}>Search or jump to…</span>
+          <Search size={14} style={{ color: "var(--text-3)", flexShrink: 0 }} />
+          <span style={{ flex: 1, textAlign: "left", color: "var(--text-3)" }}>Search or jump to…</span>
           <kbd style={{
             fontSize: 11, padding: "2px 7px", borderRadius: 5,
-            background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.3)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "var(--bg-3)", color: "var(--text-3)",
+            border: "1px solid var(--border-2)",
             fontFamily: "inherit",
           }}>⌘K</kbd>
         </motion.button>
@@ -83,36 +98,31 @@ export function TopBar() {
           <div style={{
             display: "flex", alignItems: "center", gap: 6,
             padding: "5px 12px", borderRadius: 999,
-            background: "rgba(0,230,118,0.08)",
-            border: "1px solid rgba(0,230,118,0.15)",
+            background: "var(--green-light)",
+            border: "1px solid rgba(5,150,105,0.12)",
           }}>
-            <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80" }} />
-            <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Live</span>
+            <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)" }} />
+            <span style={{ fontSize: 12, color: "var(--green)", fontWeight: 600 }}>Live</span>
           </div>
 
           <button style={{
             width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center",
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 8, cursor: "pointer", color: "rgba(255,255,255,0.5)",
+            background: "var(--bg-3)", border: "1px solid var(--border-2)",
+            borderRadius: 8, cursor: "pointer", color: "var(--text-3)",
             position: "relative", transition: "all 0.15s",
           }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fff"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.2)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.5)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)"; }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--text)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-3)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--border-2)"; }}
           aria-label="Notifications">
             <Bell size={15} />
-            <span style={{ position: "absolute", top: 8, right: 8, width: 6, height: 6, borderRadius: "50%", background: "#6366f1", border: "1.5px solid #000" }} />
+            <span style={{ position: "absolute", top: 8, right: 8, width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", border: "1.5px solid var(--bg-2)" }} />
           </button>
 
-          <button style={{
-            width: 34, height: 34, borderRadius: "50%",
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 11, fontWeight: 700, color: "#fff",
-            border: "2px solid rgba(99,102,241,0.3)", cursor: "pointer",
-            boxShadow: "0 0 12px rgba(99,102,241,0.25)",
-          }} aria-label="Profile">
-            PS
-          </button>
+          <div style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {/* Theme toggle extracted to a small UI component */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <DynamicThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -149,23 +159,23 @@ export function TopBar() {
               {/* Top accent */}
               <div style={{ height: 2, background: "linear-gradient(90deg, transparent, #6366f1, #8b5cf6, transparent)" }} />
 
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 18px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                <Search size={16} style={{ color: "#6366f1", flexShrink: 0 }} />
-                <input
-                  autoFocus value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  onKeyDown={e => { if (e.key === "Enter" && filtered[0]) go(filtered[0].href); }}
-                  placeholder="Search commands…"
-                  style={{ flex: 1, background: "transparent", fontSize: 15, color: "#ffffff", border: "none", outline: "none", fontFamily: "inherit", fontWeight: 400 }}
-                />
-                <button onClick={close} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "inherit" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 18px", borderBottom: "1px solid var(--border)" }}>
+                  <Search size={16} style={{ color: "#6366f1", flexShrink: 0 }} />
+                  <input
+                    autoFocus value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter" && filtered[0]) go(filtered[0].href); }}
+                    placeholder="Search commands…"
+                    style={{ flex: 1, background: "transparent", fontSize: 15, color: "var(--text)", border: "none", outline: "none", fontFamily: "inherit", fontWeight: 400 }}
+                  />
+                  <button onClick={close} style={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 6, padding: "3px 8px", cursor: "pointer", color: "var(--text-3)", fontSize: 11, fontFamily: "inherit" }}>
                   ESC
                 </button>
               </div>
 
               <div style={{ maxHeight: 380, overflowY: "auto" }} className="scrollbar-none">
                 {filtered.length === 0
-                  ? <p style={{ padding: "28px", textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.25)" }}>No results found</p>
+                  ? <p style={{ padding: "28px", textAlign: "center", fontSize: 14, color: "var(--text-4)" }}>No results found</p>
                   : filtered.map((cmd, i) => (
                     <motion.button
                       key={cmd.label}
@@ -177,8 +187,8 @@ export function TopBar() {
                         width: "100%", display: "flex", alignItems: "center", gap: 14,
                         padding: "12px 18px", fontSize: 14, textAlign: "left",
                         background: "transparent", border: "none",
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        cursor: "pointer", color: "rgba(255,255,255,0.7)",
+                        borderBottom: "1px solid var(--border)",
+                        cursor: "pointer", color: "var(--text-3)",
                         fontFamily: "inherit", fontWeight: 500,
                         transition: "all 0.1s",
                       }}
@@ -186,7 +196,7 @@ export function TopBar() {
                     >
                       <span style={{ fontSize: 18, flexShrink: 0, width: 28 }}>{cmd.icon}</span>
                       <span style={{ flex: 1 }}>{cmd.label}</span>
-                      <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "var(--surface-2)", color: "var(--text-4)", border: "1px solid var(--border)" }}>
                         {cmd.tag}
                       </span>
                       <kbd style={{ fontSize: 11, padding: "2px 7px", borderRadius: 5, background: "rgba(99,102,241,0.1)", color: "rgba(165,180,252,0.7)", border: "1px solid rgba(99,102,241,0.2)", fontFamily: "inherit" }}>

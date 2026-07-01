@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/glass-card";
 import { formatCurrency } from "@/lib/utils";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import type { TooltipProps } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+function CustomTooltip({ active, payload, label }: TooltipProps<number, string>) {
+  if (active && payload?.length) {
+    return (
+      <div className="glass rounded-2xl p-3 text-xs" style={{ border: "1px solid var(--border)" }}>
+        <p className="text-white font-medium mb-1">{label}</p>
+        {payload.map((p) => (
+          <p key={p.dataKey} style={{ color: p.color as string }}>
+            {p.name}: {formatCurrency(p.value as number)}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+}
 
 function generateProjections(revenue: number, expenses: number, team: number) {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -38,22 +48,6 @@ export function FinancialIntelligence() {
   const valuation = Math.round(revenue * 12 * 4.5);
   const runway = Math.round((revenue * 3) / (expenses + team * 80000));
   const burnRate = expenses + team * 80000;
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload?.length) {
-      return (
-        <div className="glass rounded-2xl p-3 border border-white/10 text-xs">
-          <p className="text-white font-medium mb-1">{label}</p>
-          {payload.map((p: any) => (
-            <p key={p.dataKey} style={{ color: p.color }}>
-              {p.name}: {formatCurrency(p.value)}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <section className="py-24 relative" aria-labelledby="finance-heading">
@@ -113,7 +107,7 @@ export function FinancialIntelligence() {
               ].map((slider) => (
                 <div key={slider.label}>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-[#737373]">{slider.label}</span>
+                    <span className="text-[var(--text-3)]">{slider.label}</span>
                     <span className="text-white font-medium">
                       {slider.isCurrency === false
                         ? `${slider.value} people`
@@ -131,9 +125,9 @@ export function FinancialIntelligence() {
                     style={{
                       background: `linear-gradient(to right, ${slider.color} 0%, ${slider.color} ${
                         ((slider.value - slider.min) / (slider.max - slider.min)) * 100
-                      }%, rgba(255,255,255,0.1) ${
+                      }%, var(--surface-3) ${
                         ((slider.value - slider.min) / (slider.max - slider.min)) * 100
-                      }%, rgba(255,255,255,0.1) 100%)`,
+                      }%, var(--surface-3) 100%)`,
                     }}
                     aria-label={slider.label}
                   />
@@ -141,14 +135,14 @@ export function FinancialIntelligence() {
               ))}
 
               {/* Calculated metrics */}
-              <div className="space-y-3 pt-4 border-t border-white/10">
+              <div className="space-y-3 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
                 {[
                   { label: "Est. Valuation", value: formatCurrency(valuation), color: "#7C3AED" },
                   { label: "Monthly Burn", value: formatCurrency(burnRate), color: "#EF4444" },
                   { label: "Runway", value: `${runway} months`, color: "#F59E0B" },
                 ].map((m) => (
                   <div key={m.label} className="flex justify-between text-sm">
-                    <span className="text-[#737373]">{m.label}</span>
+                    <span className="text-[var(--text-3)]">{m.label}</span>
                     <motion.span
                       key={m.value}
                       initial={{ opacity: 0, y: -5 }}

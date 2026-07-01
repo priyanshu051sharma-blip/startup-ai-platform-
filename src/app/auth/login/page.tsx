@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { getUser, setUser } from "@/lib/auth";
+import { getUser, setUser, findRegisteredUser, createUser } from "@/lib/auth";
 
 function AuthCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -65,19 +65,22 @@ export default function LoginPage() {
     if (!form.email || !form.password) { setError("Please fill in all fields."); return; }
     setLoading(true);
     await new Promise(r => setTimeout(r, 700));
-    const existing = getUser();
-    if (existing && existing.email === form.email) {
-      setUser(existing);
-      router.push(existing.onboarded ? "/dashboard" : "/onboarding");
+    // Check registered users first
+    const registered = findRegisteredUser(form.email);
+    if (registered) {
+      // load preserved profile (may include onboarded: true)
+      setUser(registered);
+      router.push(registered.onboarded ? "/dashboard" : "/onboarding");
     } else {
-      setUser({ id: crypto.randomUUID(), name: form.email.split("@")[0], email: form.email, createdAt: new Date().toISOString(), onboarded: false });
+      // create a new user and send to onboarding
+      const newUser = createUser(form.email.split("@")[0], form.email);
       router.push("/onboarding");
     }
     setLoading(false);
   };
 
   return (
-    <div style={{ minHeight: "100svh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative" }}>
+    <div style={{ minHeight: "100svh", background: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative" }}>
       <AuthCanvas />
 
       {/* Glow */}
@@ -88,13 +91,13 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         style={{
-          width: "100%", maxWidth: 440, position: "relative", zIndex: 1,
-          background: "rgba(10,10,10,0.85)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 16, padding: "40px 36px",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          boxShadow: "0 0 0 1px rgba(99,102,241,0.08), 0 32px 64px rgba(0,0,0,0.6)",
+          width: "100%", maxWidth: 640, position: "relative", zIndex: 1,
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: 16, padding: "36px",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
         }}
       >
         {/* Logo */}
@@ -105,8 +108,8 @@ export default function LoginPage() {
           <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", letterSpacing: "-0.02em" }}>FounderAI</span>
         </Link>
 
-        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.04em", marginBottom: 6 }}>Welcome back</h1>
-        <p style={{ fontSize: 14, color: "#666666", marginBottom: 28 }}>Sign in to your workspace.</p>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "var(--text)", letterSpacing: "-0.04em", marginBottom: 6 }}>Welcome back</h1>
+        <p style={{ fontSize: 14, color: "var(--text-2)", marginBottom: 28 }}>Sign in to your workspace.</p>
 
         <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {["email", "password"].map(field => (
@@ -122,13 +125,13 @@ export default function LoginPage() {
                 autoComplete={field === "email" ? "email" : "current-password"}
                 style={{
                   width: "100%", padding: "11px 14px", fontSize: 14, borderRadius: 8,
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  background: "rgba(255,255,255,0.04)", color: "#ffffff",
+                  border: "1px solid var(--border-2)",
+                  background: "var(--bg-3)", color: "var(--text)",
                   outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
                   fontFamily: "inherit",
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = "#6366f1"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.18)"; }}
-                onBlur={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.boxShadow = "none"; }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.boxShadow = "0 0 0 3px var(--accent-light)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "var(--border-2)"; e.currentTarget.style.boxShadow = "none"; }}
               />
             </div>
           ))}
@@ -142,11 +145,11 @@ export default function LoginPage() {
           <button type="submit" disabled={loading}
             style={{
               width: "100%", padding: "13px", fontSize: 14, marginTop: 4, borderRadius: 8,
-              background: loading ? "rgba(99,102,241,0.5)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
-              color: "#fff", border: "none",
+              background: loading ? "var(--accent-light)" : "linear-gradient(135deg, #f8fafc, #ffffff)",
+              color: "var(--text)", border: "none",
               fontWeight: 700, cursor: loading ? "not-allowed" : "pointer",
               transition: "all 0.18s",
-              boxShadow: loading ? "none" : "0 0 20px rgba(99,102,241,0.3)",
+              boxShadow: loading ? "none" : "0 20px 40px rgba(0,0,0,0.06)",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               fontFamily: "inherit",
             }}>
@@ -157,7 +160,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p style={{ marginTop: 24, fontSize: 14, color: "#555555", textAlign: "center" }}>
+        <p style={{ marginTop: 24, fontSize: 14, color: "var(--text-3)", textAlign: "center" }}>
           Don&apos;t have an account?{" "}
           <Link href="/auth/signup" style={{ color: "#a5b4fc", fontWeight: 600, textDecoration: "none" }}>Create one free</Link>
         </p>

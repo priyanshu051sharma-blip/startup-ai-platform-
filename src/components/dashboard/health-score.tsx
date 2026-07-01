@@ -27,7 +27,7 @@ export function HealthScore() {
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
         <div style={{ position: "relative", width: SZ, height: SZ, flexShrink: 0 }}>
           <svg width={SZ} height={SZ} style={{ transform: "rotate(-90deg)" }}>
-            <circle cx={SZ / 2} cy={SZ / 2} r={RR} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={SW} />
+            <circle cx={SZ / 2} cy={SZ / 2} r={RR} fill="none" stroke="var(--border)" strokeWidth={SW} />
             <motion.circle cx={SZ / 2} cy={SZ / 2} r={RR} fill="none" stroke="#6366f1" strokeWidth={SW}
               strokeLinecap="round" strokeDasharray={CC}
               initial={{ strokeDashoffset: CC }}
@@ -46,7 +46,7 @@ export function HealthScore() {
                 <span style={{ fontSize: 10, color: "var(--text-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 6 }}>{d.label}</span>
                 <span style={{ fontSize: 10, color: "var(--text-2)", fontWeight: 600, flexShrink: 0 }}>{d.score}</span>
               </div>
-              <div style={{ height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 999 }}>
+              <div style={{ height: 2, background: "var(--surface-3)", borderRadius: 999 }}>
                 <motion.div initial={{ width: 0 }} whileInView={{ width: `${d.score}%` }} viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: i * 0.06, ease: "easeOut" }}
                   style={{ height: "100%", borderRadius: 999, background: sc(d.score) }} />

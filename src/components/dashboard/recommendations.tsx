@@ -35,10 +35,10 @@ export function Recommendations() {
     <div style={{ padding: "24px" }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 18 }}>
         <div>
-          <p style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 4 }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-3)", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 4 }}>
             AI Recommendations
           </p>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>{open.length} actions · sorted by impact</p>
+          <p style={{ fontSize: 12, color: "var(--text-4)" }}>{open.length} actions · sorted by impact</p>
         </div>
         <span style={{ fontSize: 12, color: "#fbbf24", fontWeight: 600 }}>+24 pts potential</span>
       </div>
@@ -52,29 +52,29 @@ export function Recommendations() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: i * 0.05 }}
-              style={{ borderRadius: 8, overflow: "hidden", background: isOpen ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)", border: `1px solid ${isOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)"}`, transition: "all 0.15s" }}>
+              style={{ borderRadius: 8, overflow: "hidden", background: isOpen ? "var(--surface-3)" : "var(--surface-2)", border: isOpen ? "1px solid var(--border-2)" : "1px solid var(--border)", transition: "all 0.15s" }}>
               <button onClick={() => setExpanded(isOpen ? null : rec.id)}
                 style={{ width: "100%", display: "flex", alignItems: "flex-start", gap: 10, padding: "12px 14px", textAlign: "left", background: "transparent", border: "none", cursor: "pointer" }}>
                 <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: pc.bg, color: pc.text, border: `1px solid ${pc.border}`, flexShrink: 0, marginTop: 2 }}>
                   {rec.priority.toUpperCase()}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", lineHeight: 1.35, marginBottom: 3 }}>{rec.title}</p>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{rec.desc}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", lineHeight: 1.35, marginBottom: 3 }}>{rec.title}</p>
+                  <p style={{ fontSize: 12, color: "var(--text-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{rec.desc}</p>
                 </div>
                 <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 700, flexShrink: 0 }}>{rec.impact}</span>
               </button>
               <AnimatePresence>
                 {isOpen && (
                   <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} transition={{ duration: 0.2 }} style={{ overflow: "hidden" }}>
-                    <div style={{ padding: "0 14px 14px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginTop: 10, marginBottom: 6 }}>{rec.why}</p>
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>Effort: {rec.effort}</p>
+                    <div style={{ padding: "0 14px 14px", borderTop: "1px solid var(--border)" }}>
+                      <p style={{ fontSize: 13, color: "var(--text-3)", lineHeight: 1.6, marginTop: 10, marginBottom: 6 }}>{rec.why}</p>
+                      <p style={{ fontSize: 12, color: "var(--text-4)", marginBottom: 12 }}>Effort: {rec.effort}</p>
                       <div style={{ display: "flex", gap: 8 }}>
                         <button onClick={() => markDone(rec.id)}
-                          style={{ flex: 1, fontSize: 13, padding: "8px", borderRadius: 6, fontWeight: 600, background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
-                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.1)"}
-                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)"}>
+                          style={{ flex: 1, fontSize: 13, padding: "8px", borderRadius: 6, fontWeight: 600, background: "var(--surface-2)", color: "var(--text-3)", border: "1px solid var(--border)", cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--surface-3)"}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--surface-2)"}>
                           Mark done
                         </button>
                         <button style={{ flex: 1, fontSize: 13, padding: "8px", borderRadius: 6, fontWeight: 600, background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "#fff", border: "none", cursor: "pointer", fontFamily: "inherit" }}>
@@ -92,11 +92,11 @@ export function Recommendations() {
 
       {done.length > 0 && (
         <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.2)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Completed ({done.length})
           </p>
           {done.map(rec => (
-            <div key={rec.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", fontSize: 12, color: "rgba(255,255,255,0.25)" }}>
+            <div key={rec.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", fontSize: 12, color: "var(--text-4)" }}>
               <span style={{ color: "#4ade80", fontWeight: 700 }}>✓</span>
               <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "line-through" }}>{rec.title}</span>
               <span style={{ color: "#4ade80", flexShrink: 0, fontWeight: 600, fontSize: 11 }}>{rec.impact}</span>

@@ -96,8 +96,8 @@ export function AiInsightsPanel() {
               transition={{ delay: i * 0.07, duration: 0.35 }}
               className="rounded-[18px] border transition-all overflow-hidden cursor-pointer group"
               style={{
-                background: isOpen ? `${insight.color}06` : "rgba(255,255,255,0.025)",
-                borderColor: isOpen ? `${insight.color}25` : "rgba(255,255,255,0.06)",
+                background: isOpen ? `${insight.color}06` : "var(--surface-3)",
+                borderColor: isOpen ? `${insight.color}25` : "var(--border)",
               }}
               onClick={() => setExpanded(isOpen ? null : insight.id)}
             >
@@ -186,7 +186,7 @@ export function AiInsightsPanel() {
           </p>
           <div className="space-y-1">
             {closed.map((insight) => (
-              <div key={insight.id} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.02] text-[#737373] text-[12px]">
+              <div key={insight.id} className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[#737373] text-[12px]" style={{ background: "var(--surface-3)" }}>
                 <CheckCircle size={12} className="text-[#10B981]" />
                 <span className="line-through">{insight.title}</span>
                 <span className="ml-auto text-[10px] text-[#10B981]">{insight.impact}</span>

@@ -80,8 +80,8 @@ export function AiExecutiveTeam() {
               whileTap={{ scale: 0.97 }}
               className="relative rounded-[16px] p-3 text-left transition-all border cursor-pointer focus-visible:outline-none overflow-hidden"
               style={{
-                background: isSelected ? `${agent.color}12` : "rgba(255,255,255,0.03)",
-                borderColor: isSelected ? `${agent.color}35` : "rgba(255,255,255,0.06)",
+                background: isSelected ? `${agent.color}12` : "var(--surface-3)",
+                borderColor: isSelected ? `${agent.color}35` : "var(--border)",
               }}
               aria-pressed={isSelected}
             >
@@ -114,7 +114,7 @@ export function AiExecutiveTeam() {
               <p className="text-[#737373] text-[10px] mt-0.5 truncate">{agent.task}</p>
 
               {/* Confidence bar */}
-              <div className="mt-2 h-0.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="mt-2 h-0.5 rounded-full overflow-hidden" style={{ background: "var(--surface-3)" }}>
                 <motion.div
                   animate={{ width: `${agent.confidence}%` }}
                   transition={{ duration: 1, ease: "easeOut" }}

@@ -107,7 +107,7 @@ export function Testimonials() {
 
               {/* Quote */}
               <p className="text-[#B4B4B4] text-sm leading-relaxed flex-1">
-                "{t.quote}"
+                {`"${t.quote}"`}
               </p>
 
               {/* Author */}

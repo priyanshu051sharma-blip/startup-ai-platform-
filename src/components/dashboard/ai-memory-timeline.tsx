@@ -42,7 +42,7 @@ export function AiMemoryTimeline() {
           <Clock size={15} className="text-[#4F8CFF]" />
           <h3 className="text-white font-semibold text-[14px]">AI Memory Timeline</h3>
         </div>
-        <span className="text-[11px] text-[#737373] bg-white/[0.04] border border-white/[0.06] px-2 py-1 rounded-full">
+        <span className="text-[11px] text-[#737373] px-2 py-1 rounded-full" style={{ background: "var(--surface-3)", border: "1px solid var(--border)" }}>
           {events.length} events stored
         </span>
       </div>
@@ -128,7 +128,8 @@ export function AiMemoryTimeline() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onClick={() => setShowAll(true)}
-            className="w-full mt-3 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[#737373] hover:text-white text-[12px] hover:bg-white/[0.04] transition-all border border-white/[0.06] hover:border-white/[0.1]"
+            className="w-full mt-3 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[#737373] hover:text-white text-[12px] transition-all"
+            style={{ background: "var(--surface-3)", border: "1px solid var(--border)" }}
           >
             <ChevronDown size={13} />
             Show {events.length - 4} more events

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
@@ -17,16 +16,9 @@ const AGENTS = [
 const TICKER_ITEMS = "MRR ₹4.2L  ·  HEALTH 81/100  ·  RUNWAY 18 MONTHS  ·  VALUATION ₹3.2Cr  ·  CUSTOMERS 847  ·  BURN ₹2.8L  ·  ARR ₹50.4L  ·  PITCH SCORE 94/100";
 
 export function PrimaryInsight() {
-  const [name, setName] = useState("Founder");
-  const [stage, setStage] = useState("launched");
-
-  useEffect(() => {
-    const user = getUser();
-    if (user) {
-      setName(user.name.split(" ")[0]);
-      setStage(user.startup?.stage ?? "launched");
-    }
-  }, []);
+  const user = getUser();
+  const name = user?.name.split(" ")[0] ?? "Founder";
+  const stage = user?.startup?.stage ?? "launched";
 
   const h = new Date().getHours();
   const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
@@ -41,14 +33,14 @@ export function PrimaryInsight() {
 
   return (
     <div style={{
-      borderBottom: "1px solid rgba(255,255,255,0.07)",
-      background: "rgba(4,4,10,0.92)",
+      borderBottom: "1px solid var(--border)",
+      background: "var(--surface)",
       backdropFilter: "blur(20px)",
       WebkitBackdropFilter: "blur(20px)",
     }}>
       {/* Live ticker */}
       <div style={{
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
+        borderBottom: "1px solid var(--border)",
         overflow: "hidden", height: 34,
         display: "flex", alignItems: "center",
         background: "rgba(99,102,241,0.04)",
@@ -72,7 +64,7 @@ export function PrimaryInsight() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.35)", marginBottom: 10, letterSpacing: "0.02em" }}>
+              style={{ fontSize: 13, fontWeight: 500, color: "var(--text-3)", marginBottom: 10, letterSpacing: "0.02em" }}>
               {greeting}, <span style={{ color: "rgba(165,180,252,0.8)", fontWeight: 600 }}>{name}</span>
             </motion.p>
 
@@ -97,7 +89,7 @@ export function PrimaryInsight() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.65, maxWidth: 520 }}>
+              style={{ fontSize: 15, color: "var(--text-2)", lineHeight: 1.65, maxWidth: 520 }}>
               {sub}
             </motion.p>
           </div>
@@ -123,14 +115,14 @@ export function PrimaryInsight() {
             </Link>
             <Link href="/dashboard/analysis" style={{
               padding: "10px 22px", borderRadius: 8,
-              background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.7)",
+              background: "var(--surface-2)", color: "var(--text-2)",
               fontSize: 14, fontWeight: 500,
-              textDecoration: "none", border: "1px solid rgba(255,255,255,0.1)",
+              textDecoration: "none", border: "1px solid var(--border)",
               display: "inline-flex", alignItems: "center",
               transition: "border-color 0.15s, background 0.15s",
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.3)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)"; }}>
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-2)"; (e.currentTarget as HTMLElement).style.background = "var(--surface-3)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.background = "var(--surface-2)"; }}>
               Run analysis
             </Link>
           </motion.div>
@@ -142,7 +134,7 @@ export function PrimaryInsight() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap" }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.25)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-3)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             AI Team
           </span>
           {AGENTS.map((a, i) => (
@@ -153,14 +145,14 @@ export function PrimaryInsight() {
               style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <div className={a.active ? "pulse-dot" : ""} style={{
                 width: 6, height: 6, borderRadius: "50%",
-                background: a.active ? "#a5b4fc" : "rgba(255,255,255,0.12)",
+                background: a.active ? "#a5b4fc" : "var(--surface-3)",
               }} />
-              <span style={{ fontSize: 12, fontWeight: 500, color: a.active ? "rgba(165,180,252,0.8)" : "rgba(255,255,255,0.2)" }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: a.active ? "rgba(165,180,252,0.8)" : "var(--text-3)" }}>
                 AI {a.name}
               </span>
             </motion.div>
           ))}
-          <span style={{ marginLeft: "auto", fontSize: 12, color: "rgba(255,255,255,0.2)" }}>Just now</span>
+          <span style={{ marginLeft: "auto", fontSize: 12, color: "var(--text-4)" }}>Just now</span>
         </motion.div>
       </div>
     </div>

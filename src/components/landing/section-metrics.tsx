@@ -45,8 +45,8 @@ export function LandingMetrics() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid var(--border)",
+            borderBottom: "1px solid var(--border)",
             marginBottom: 96,
           }}
         >
@@ -60,13 +60,13 @@ export function LandingMetrics() {
               style={{
                 padding: "48px 0",
                 textAlign: "center",
-                borderRight: i < NUMBERS.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                borderRight: i < NUMBERS.length - 1 ? "1px solid var(--border)" : "none",
               }}
             >
-              <p style={{ fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: "#f5f5f5", letterSpacing: "-0.04em", lineHeight: 1, marginBottom: 8 }}>
+              <p style={{ fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 700, color: "var(--text)", letterSpacing: "-0.04em", lineHeight: 1, marginBottom: 8 }}>
                 {n.value}
               </p>
-              <p style={{ fontSize: 13, color: "#444" }}>{n.label}</p>
+              <p style={{ fontSize: 13, color: "var(--text-3)" }}>{n.label}</p>
             </motion.div>
           ))}
         </div>
@@ -89,9 +89,9 @@ export function LandingMetrics() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              style={{ padding: 28, borderRadius: 20, background: "#0f0f0f", border: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column" }}
+              style={{ padding: 28, borderRadius: 20, background: "var(--surface)", border: "1px solid var(--border)", display: "flex", flexDirection: "column" }}
             >
-              <p style={{ fontSize: 14, lineHeight: 1.75, color: "#888", marginBottom: 28, flex: 1 }}>
+              <p style={{ fontSize: 14, lineHeight: 1.75, color: "var(--text-2)", marginBottom: 28, flex: 1 }}>
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
@@ -99,10 +99,10 @@ export function LandingMetrics() {
                   {t.name[0]}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</p>
-                  <p style={{ fontSize: 12, color: "#444" }}>{t.role}</p>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</p>
+                  <p style={{ fontSize: 12, color: "var(--text-3)" }}>{t.role}</p>
                 </div>
-                <span style={{ fontSize: 11, padding: "4px 10px", borderRadius: 999, background: "rgba(34,197,94,0.08)", color: "#4ade80", fontWeight: 500, flexShrink: 0 }}>
+                <span style={{ fontSize: 11, padding: "4px 10px", borderRadius: 999, background: "rgba(34,197,94,0.12)", color: "#4ade80", fontWeight: 500, flexShrink: 0 }}>
                   {t.result}
                 </span>
               </div>

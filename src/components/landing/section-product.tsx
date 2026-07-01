@@ -83,7 +83,7 @@ export function LandingProduct() {
                 transition: "all 0.18s",
                 background: active === t.id ? "var(--surface-3)" : "transparent",
                 color: active === t.id ? "var(--text)" : "var(--text-3)",
-                outline: active === t.id ? "1px solid rgba(255,255,255,0.08)" : "none",
+                outline: active === t.id ? "1px solid var(--border-2)" : "none",
               }}
             >
               {t.label}
@@ -140,9 +140,9 @@ export function LandingProduct() {
               style={{
                 borderRadius: 20,
                 overflow: "hidden",
-                background: "#0a0a14",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.15)",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.18)",
               }}
             >
               {cur.preview}
@@ -165,14 +165,14 @@ function AnalysisPreview() {
   return (
     <div style={{ padding: 28 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <p style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5" }}>Startup Analysis</p>
+        <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text)" }}>Startup Analysis</p>
         <span className="pill pill-green" style={{ fontSize: 10 }}>94% confidence</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {bars.map((b, i) => (
           <motion.div key={b.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.06 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-              <span style={{ fontSize: 12, color: "#888" }}>{b.label}</span>
+              <span style={{ fontSize: 12, color: "var(--text-3)" }}>{b.label}</span>
               <span style={{ fontSize: 12, fontWeight: 600, color: b.ok ? "#f5f5f5" : "#f87171" }}>{b.score}</span>
             </div>
             <div style={{ height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 999 }}>
@@ -198,7 +198,7 @@ function AnalysisPreview() {
 function FinancialPreview() {
   return (
     <div style={{ padding: 28 }}>
-      <p style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5", marginBottom: 24 }}>Financial Forecast · 12 months</p>
+      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text)", marginBottom: 24 }}>Financial Forecast · 12 months</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
         {[
           { label: "MRR",       value: "₹4.2L",  color: "#4ade80" },
@@ -206,8 +206,8 @@ function FinancialPreview() {
           { label: "Burn Rate", value: "₹2.8L",  color: "#f59e0b" },
           { label: "Valuation", value: "₹3.2Cr", color: "#a5b4fc" },
         ].map((m) => (
-          <div key={m.label} style={{ padding: "16px 14px", borderRadius: 12, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p style={{ fontSize: 11, color: "#444", marginBottom: 6 }}>{m.label}</p>
+          <div key={m.label} style={{ padding: "16px 14px", borderRadius: 12, background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+            <p style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 6 }}>{m.label}</p>
             <p style={{ fontSize: 18, fontWeight: 700, color: m.color, letterSpacing: "-0.02em" }}>{m.value}</p>
           </div>
         ))}
@@ -224,11 +224,11 @@ function FinancialPreview() {
 function PitchPreview() {
   return (
     <div style={{ padding: 28 }}>
-      <p style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5", marginBottom: 24 }}>Investor Simulator · Live session</p>
-      <div style={{ padding: "16px", borderRadius: 14, background: "#141414", border: "1px solid rgba(255,255,255,0.07)", marginBottom: 20 }}>
-        <p style={{ fontSize: 10, color: "#444", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>AI Investor asks</p>
-        <p style={{ fontSize: 14, color: "#f5f5f5", lineHeight: 1.6 }}>
-          "What makes you 10× better than existing players? Be specific."
+      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text)", marginBottom: 24 }}>Investor Simulator · Live session</p>
+      <div style={{ padding: "16px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--border)", marginBottom: 20 }}>
+        <p style={{ fontSize: 10, color: "var(--text-3)", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>AI Investor asks</p>
+        <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.6 }}>
+          {`"What makes you 10× better than existing players? Be specific."`}
         </p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

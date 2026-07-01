@@ -1,21 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { getUser, setUser, signOut } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [user, setLocalUser] = useState({ name: "", email: "", startup: { name: "", idea: "", industry: "", stage: "" } });
   const [saved, setSaved] = useState(false);
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("openai_key") ?? "";
+  });
 
-  useEffect(() => {
-    const u = getUser();
-    if (u) setLocalUser({ name: u.name, email: u.email, startup: { name: u.startup?.name ?? "", idea: u.startup?.idea ?? "", industry: u.startup?.industry ?? "", stage: u.startup?.stage ?? "" } });
-    setApiKey(typeof window !== "undefined" ? localStorage.getItem("openai_key") ?? "" : "");
-  }, []);
+  const u = typeof window !== "undefined" ? getUser() : null;
+  const [user, setLocalUser] = useState(() => ({
+    name: u?.name ?? "",
+    email: u?.email ?? "",
+    startup: {
+      name: u?.startup?.name ?? "",
+      idea: u?.startup?.idea ?? "",
+      industry: u?.startup?.industry ?? "",
+      stage: u?.startup?.stage ?? "",
+    },
+  }));
 
   const save = () => {
     const u = getUser();
